@@ -18,7 +18,7 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.batchapi;
+package com.github.wnameless.spring.batchapi.test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

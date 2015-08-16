@@ -18,7 +18,7 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.batchapi;
+package com.github.wnameless.spring.batchapi.test;
 
 import static org.junit.Assert.assertTrue;
 
