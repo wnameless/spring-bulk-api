@@ -14,7 +14,9 @@ Ex: enable basic authentication and SSL, disable CSRF protection... etc.
 #Maven Repo
 ```xml
 <dependency>
-	Not released yet
+	<groupId>com.github.wnameless</groupId>
+	<artifactId>spring-batch-api</artifactId>
+	<version>0.1.0</version>
 </dependency>
 ```
 
