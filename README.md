@@ -32,21 +32,21 @@ public class WebConfig {
 
 By default path is /bulk and limit to 100 operations,<br />
 it can be configured by Spring application.properties
-```
-spring.bulk.api.path=/batch
-spring.bulk.api.limit=200
+```properties
+spring.bulk.api.path=/batch # default is /bulk
+spring.bulk.api.limit=200 # default is 100
 ```
 
 Request JSON sample
 ```json
-# POST /batch
+# POST /bulk
 # Content-Type: application/json
 
 {
-  operations: [
-    {"method": "GET", url: "/home"},
-    {"method": "POST", url: "/posts/new", params: {"title": "My Dream"}},
-    {"method": "DELETE", url: "/posts/123", headers: {"Authentication": "Basic ..."}}
+  "operations": [
+    {"method": "GET", "url": "/home"},
+    {"method": "POST", "url": "/posts/new", "params": {"title": "My Dream"}},
+    {"method": "DELETE", "url": "/posts/123", "headers": {"Authentication": "Basic ..."}}
   ]
 }
 
@@ -60,9 +60,9 @@ Request JSON sample
 Response JSON sample
 ```json
 {
-  results: [
-    {"status": 200, "body": "Welcome!", headers: {}},
-    {"status": 201, "body": {id: 222, "title": "My Dream"}, headers: {}}
+  "results": [
+    {"status": 200, "body": "Welcome!", "headers": {}},
+    {"status": 201, "body": {"id": 222, "title": "My Dream"}, "headers": {}}
   ]
 }
 ```
