@@ -18,7 +18,7 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.batchapi;
+package com.github.wnameless.spring.bulkapi;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -31,5 +31,5 @@ import org.springframework.context.annotation.ComponentScan;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@ComponentScan("com.github.wnameless.spring.batchapi")
-public @interface EnableBatchApi {}
+@ComponentScan("com.github.wnameless.spring.bulkapi")
+public @interface EnableBulkApi {}

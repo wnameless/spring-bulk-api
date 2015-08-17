@@ -18,7 +18,7 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.batchapi;
+package com.github.wnameless.spring.bulkapi;
 
 import java.io.IOException;
 import java.net.URI;
@@ -45,24 +45,24 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
-public class BatchApiController {
+public class BulkApiController {
 
   @Autowired
   Environment env;
 
-  @RequestMapping(value = "${spring.batch.api.path}",
+  @RequestMapping(value = "${spring.bulk.api.path}",
       method = RequestMethod.POST)
-  List<BatchResponse> batch(@RequestBody List<BatchRequest> requests,
+  List<BulkResponse> batch(@RequestBody List<BulkRequest> requests,
       HttpServletRequest servleRequest) throws URISyntaxException, IOException {
-    int max = Integer.valueOf(env.getProperty("spring.batch.api.limit", "100"));
+    int max = Integer.valueOf(env.getProperty("spring.bulk.api.limit", "100"));
     if (requests.size() > max) {
-      throw new BatchApiException(HttpStatus.PAYLOAD_TOO_LARGE,
+      throw new BulkApiException(HttpStatus.PAYLOAD_TOO_LARGE,
           "Batch requests exceed the limitation(" + max + ").");
     }
 
-    List<BatchResponse> responses = new ArrayList<BatchResponse>();
+    List<BulkResponse> responses = new ArrayList<BulkResponse>();
     RestTemplate template = new RestTemplate();
-    for (BatchRequest request : requests) {
+    for (BulkRequest request : requests) {
       BodyBuilder bodyBuilder =
           RequestEntity.method(httpMethod(request.getMethod()),
               new URI((servleRequest.isSecure() ? "https://" : "http://")
@@ -82,7 +82,7 @@ public class BatchApiController {
 
       ResponseEntity<String> rawRes =
           template.exchange(bodyBuilder.build(), String.class);
-      BatchResponse res = new BatchResponse();
+      BulkResponse res = new BulkResponse();
       res.setStatus(Short.valueOf(rawRes.getStatusCode().toString()));
       res.setHeaders(rawRes.getHeaders().toSingleValueMap());
       res.setBody(rawRes.getBody());

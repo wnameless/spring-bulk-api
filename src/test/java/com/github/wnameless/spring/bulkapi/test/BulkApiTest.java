@@ -18,7 +18,7 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.batchapi.test;
+package com.github.wnameless.spring.bulkapi.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -47,14 +47,14 @@ import com.google.gson.reflect.TypeToken;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebIntegrationTest
-public class BatchApiTest {
+public class BulkApiTest {
 
   RestTemplate template = new RestTemplate();
   HttpClient client = HttpClientBuilder.create().build();
 
   @Test
   public void testBatch() throws Exception {
-    HttpPost post = new HttpPost("http://localhost:8080/batch");
+    HttpPost post = new HttpPost("http://localhost:8080/bulk");
     post.setHeader("Content-Type", "application/json");
     String json =
         "[{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
@@ -72,7 +72,7 @@ public class BatchApiTest {
 
   @Test
   public void testOverLimitationError() throws Exception {
-    HttpPost post = new HttpPost("http://localhost:8080/batch");
+    HttpPost post = new HttpPost("http://localhost:8080/bulk");
     post.setHeader("Content-Type", "application/json");
     String json =
         "[{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "

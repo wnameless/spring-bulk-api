@@ -18,7 +18,7 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.batchapi.test;
+package com.github.wnameless.spring.bulkapi.test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,13 +32,13 @@ import org.springframework.security.config.annotation.web.servlet.configuration.
 @EnableWebMvcSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  @Value("${spring.batch.api.path}")
-  String batchPath;
+  @Value("${spring.bulk.api.path}")
+  String bulkPath;
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.csrf().disable();
-    http.authorizeRequests().antMatchers(batchPath).permitAll();
+    http.authorizeRequests().antMatchers(bulkPath).permitAll();
   }
 
   @Autowired

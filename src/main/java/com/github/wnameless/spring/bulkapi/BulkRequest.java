@@ -18,12 +18,12 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.batchapi;
+package com.github.wnameless.spring.bulkapi;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public final class BatchRequest {
+public final class BulkRequest {
 
   private String url;
   private String method = "GET";

@@ -18,7 +18,7 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.batchapi;
+package com.github.wnameless.spring.bulkapi;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,12 +26,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@ControllerAdvice(assignableTypes = BatchApiController.class)
-public class BatchApiExceptionHandlerAdvice {
+@ControllerAdvice(assignableTypes = BulkApiController.class)
+public class BulkApiExceptionHandlerAdvice {
 
-  @ExceptionHandler(BatchApiException.class)
+  @ExceptionHandler(BulkApiException.class)
   @ResponseBody
-  String handleError(HttpServletResponse res, BatchApiException exception) {
+  String handleError(HttpServletResponse res, BulkApiException exception) {
     res.setStatus(exception.getStatus().value());
 
     return exception.getError();

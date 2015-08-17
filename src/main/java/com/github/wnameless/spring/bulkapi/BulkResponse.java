@@ -18,11 +18,11 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.batchapi;
+package com.github.wnameless.spring.bulkapi;
 
 import java.util.Map;
 
-public final class BatchResponse {
+public final class BulkResponse {
 
   private short status;
   private String body;

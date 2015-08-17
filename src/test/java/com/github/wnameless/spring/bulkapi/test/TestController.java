@@ -18,19 +18,19 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.batchapi.test;
+package com.github.wnameless.spring.bulkapi.test;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.github.wnameless.spring.batchapi.EnableBatchApi;
+@Controller
+public class TestController {
 
-@SpringBootApplication
-@EnableBatchApi
-public class Application {
-
-  public static void main(String... args) {
-    SpringApplication.run(Application.class, args);
+  @RequestMapping("/home")
+  @ResponseBody
+  String home() {
+    return "HAHA";
   }
 
 }

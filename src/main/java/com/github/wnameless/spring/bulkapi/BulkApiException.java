@@ -18,18 +18,18 @@
  * the License.
  *
  */
-package com.github.wnameless.spring.batchapi;
+package com.github.wnameless.spring.bulkapi;
 
 import org.springframework.http.HttpStatus;
 
-public final class BatchApiException extends RuntimeException {
+public final class BulkApiException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 
   private final HttpStatus status;
   private final String error;
 
-  public BatchApiException(HttpStatus status, String error) {
+  public BulkApiException(HttpStatus status, String error) {
     if (status == null) throw new NullPointerException();
     if (error == null) throw new NullPointerException();
 
@@ -60,7 +60,7 @@ public final class BatchApiException extends RuntimeException {
     if (obj == this) return true;
     if (obj == null) return false;
 
-    BatchApiException ex = (BatchApiException) obj;
+    BulkApiException ex = (BulkApiException) obj;
 
     return ex.status.equals(status) && ex.error.equals(error);
   }
