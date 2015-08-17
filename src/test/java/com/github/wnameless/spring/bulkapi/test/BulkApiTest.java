@@ -79,6 +79,7 @@ public class BulkApiTest {
         .fromJson(result);
 
     assertTrue(200 == Double.valueOf(res.getResults().get(0).getStatus()));
+    assertEquals(1000, res.getResults().size());
   }
 
   @Test

@@ -47,8 +47,6 @@ import org.springframework.web.client.RestTemplate;
 /**
  * 
  * {@link BulkApiController} handles the bulk request from API users.
- * 
- * @author wmw
  *
  */
 @RestController
@@ -69,7 +67,7 @@ public class BulkApiController {
    * @throws BulkApiException
    *           if this bulk request is invalid
    */
-  @RequestMapping(value = "${spring.bulk.api.path}", method = POST)
+  @RequestMapping(value = "${spring.bulk.api.path:/bulk}", method = POST)
   BulkResponse bulk(@RequestBody BulkRequest req, HttpServletRequest servReq) {
     validateBulkRequest(req, servReq);
 
