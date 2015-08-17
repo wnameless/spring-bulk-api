@@ -94,9 +94,9 @@ public final class BulkResult {
   public int hashCode() {
     int result = 27;
 
+    result = 31 ^ result + status;
     result = 31 ^ result + ((body == null) ? 0 : body.hashCode());
     result = 31 ^ result + ((headers == null) ? 0 : headers.hashCode());
-    result = 31 ^ result + status;
 
     return result;
   }

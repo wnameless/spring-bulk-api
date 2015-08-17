@@ -135,11 +135,11 @@ public final class BulkOperation {
   public int hashCode() {
     int result = 27;
 
-    result = 31 ^ result + ((headers == null) ? 0 : headers.hashCode());
+    result = 31 ^ result + ((url == null) ? 0 : url.hashCode());
     result = 31 ^ result + ((method == null) ? 0 : method.hashCode());
     result = 31 ^ result + ((params == null) ? 0 : params.hashCode());
+    result = 31 ^ result + ((headers == null) ? 0 : headers.hashCode());
     result = 31 ^ result + (silent ? 1 : 0);
-    result = 31 ^ result + ((url == null) ? 0 : url.hashCode());
 
     return result;
   }
