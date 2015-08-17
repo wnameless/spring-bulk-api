@@ -23,6 +23,11 @@ package com.github.wnameless.spring.bulkapi;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * 
+ * {@link BulkOperation} contains all details of a RESTful operation.
+ *
+ */
 public final class BulkOperation {
 
   private String url;
@@ -31,42 +36,97 @@ public final class BulkOperation {
   private Map<String, String> headers = new LinkedHashMap<String, String>();
   private boolean silent = false;
 
+  /**
+   * Returns the URL of this RESTful operation.
+   * 
+   * @return a URL string
+   */
   public String getUrl() {
     return url;
   }
 
+  /**
+   * Sets the URL of this RESTful operation.
+   * 
+   * @param url
+   *          a URL string
+   */
   public void setUrl(String url) {
     this.url = url;
   }
 
+  /**
+   * Returns the HTTP method of this RESTful operation.
+   * 
+   * @return a HTTP method string
+   */
   public String getMethod() {
     return method;
   }
 
+  /**
+   * Sets the HTTP method of this RESTful operation.
+   * 
+   * @param method
+   *          a HTTP method string
+   */
   public void setMethod(String method) {
     this.method = method;
   }
 
+  /**
+   * Returns the HTTP parameters of this RESTful operation.
+   * 
+   * @return parameters of a RESTful operation
+   */
   public Map<String, ?> getParams() {
     return params;
   }
 
+  /**
+   * Sets the HTTP parameters of this RESTful operation.
+   * 
+   * @param params
+   *          parameters of a RESTful operation
+   */
   public void setParams(Map<String, ?> params) {
     this.params = params;
   }
 
+  /**
+   * Returns the HTTP headers of this RESTful operation.
+   * 
+   * @return headers of a RESTful operation
+   */
   public Map<String, String> getHeaders() {
     return headers;
   }
 
+  /**
+   * Sets the HTTP headers of this RESTful operation.
+   * 
+   * @param headers
+   *          headers of a RESTful operation
+   */
   public void setHeaders(Map<String, String> headers) {
     this.headers = headers;
   }
 
+  /**
+   * Returns if this RESTful operation result should be omitted.
+   * 
+   * @return true if this RESTful operation is silent, false otherwise
+   */
   public boolean isSilent() {
     return silent;
   }
 
+  /**
+   * Sets if this RESTful operation result should be omitted.
+   * 
+   * @param silent
+   *          true if this RESTful operation is silent, false otherwise
+   */
   public void setSilent(boolean silent) {
     this.silent = silent;
   }

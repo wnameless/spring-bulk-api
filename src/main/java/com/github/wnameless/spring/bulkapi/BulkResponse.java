@@ -23,20 +23,45 @@ package com.github.wnameless.spring.bulkapi;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ * {@link BulkResponse} contains all bulk results in one bulk response.
+ *
+ */
 public final class BulkResponse {
 
   private List<BulkResult> results = new ArrayList<BulkResult>();
 
+  /**
+   * Creates a {@link BulkResponse}
+   */
   public BulkResponse() {}
 
+  /**
+   * Creates a {@link BulkResponse} by given results.
+   * 
+   * @param results
+   *          a list of {@link BulkResult}s
+   */
   public BulkResponse(List<BulkResult> results) {
     this.results = results;
   }
 
+  /**
+   * Returns all results in this {@link BulkResponse}.
+   * 
+   * @return a list of {@link BulkResult}s
+   */
   public List<BulkResult> getResults() {
     return results;
   }
 
+  /**
+   * Sets all results in this {@link BulkResponse}.
+   * 
+   * @param results
+   *          a list of {@link BulkResult}s
+   */
   public void setResults(List<BulkResult> results) {
     this.results = results;
   }

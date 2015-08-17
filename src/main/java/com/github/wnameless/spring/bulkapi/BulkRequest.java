@@ -23,14 +23,30 @@ package com.github.wnameless.spring.bulkapi;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ * {@link BulkRequest} contains all bulk operations in one bulk request.
+ *
+ */
 public final class BulkRequest {
 
   private List<BulkOperation> operations = new ArrayList<BulkOperation>();
 
+  /**
+   * Returns all operations in this {@link BulkRequest}.
+   * 
+   * @return a list of {@link BulkOperation}s
+   */
   public List<BulkOperation> getOperations() {
     return operations;
   }
 
+  /**
+   * Sets all operations in this {@link BulkRequest}.
+   * 
+   * @param operations
+   *          a list of {@link BulkOperation}s
+   */
   public void setOperations(List<BulkOperation> operations) {
     this.operations = operations;
   }

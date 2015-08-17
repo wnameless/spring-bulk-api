@@ -44,16 +44,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * 
+ * {@link BulkApiController} handles the bulk request from API users.
+ * 
+ * @author wmw
+ *
+ */
 @RestController
 public class BulkApiController {
 
   @Autowired
   Environment env;
 
+  /**
+   * Processes bulk requests from API users. Returns a {@link BulkResponse}
+   * which contains all the results of the {@link BulkRequest}.
+   * 
+   * @param req
+   *          a {@link BulkRequest}
+   * @param servReq
+   *          the {@link HttpServletRequest}
+   * @return a {@link BulkResponse}
+   * @throws BulkApiException
+   *           if this bulk request is invalid
+   */
   @RequestMapping(value = "${spring.bulk.api.path}", method = POST)
-  BulkResponse bulk(@RequestBody BulkRequest req, HttpServletRequest servReq)
-      throws URISyntaxException {
-    validateBulkRequest(req);
+  BulkResponse bulk(@RequestBody BulkRequest req, HttpServletRequest servReq) {
+    validateBulkRequest(req, servReq);
 
     List<BulkResult> results = new ArrayList<BulkResult>();
     RestTemplate template = new RestTemplate();
@@ -88,10 +106,18 @@ public class BulkApiController {
     }
   }
 
-  private URI computeUri(HttpServletRequest servReq, BulkOperation op)
-      throws URISyntaxException {
-    return new URI((servReq.isSecure() ? "https://" : "http://")
-        + servReq.getLocalAddr() + ":" + servReq.getLocalPort() + op.getUrl());
+  private URI computeUri(HttpServletRequest servReq, BulkOperation op) {
+    URI uri;
+    try {
+      uri = new URI(
+          (servReq.isSecure() ? "https://" : "http://") + servReq.getLocalAddr()
+              + ":" + servReq.getLocalPort() + op.getUrl());
+    } catch (URISyntaxException e) {
+      throw new BulkApiException(HttpStatus.UNPROCESSABLE_ENTITY,
+          "Invalid URLs exist in this bulk request.");
+    }
+
+    return uri;
   }
 
   private BulkResult buldResult(ResponseEntity<String> rawRes) {
@@ -103,11 +129,17 @@ public class BulkApiController {
     return res;
   }
 
-  private void validateBulkRequest(BulkRequest req) {
+  private void validateBulkRequest(BulkRequest req,
+      HttpServletRequest servReq) {
     int max = Integer.valueOf(env.getProperty("spring.bulk.api.limit", "100"));
     if (req.getOperations().size() > max) {
       throw new BulkApiException(HttpStatus.PAYLOAD_TOO_LARGE,
           "Bulk operations exceed the limitation(" + max + ").");
+    }
+
+    // Check if any invalid URL exists
+    for (BulkOperation op : req.getOperations()) {
+      computeUri(servReq, op);
     }
   }
 

@@ -26,13 +26,28 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+/**
+ * 
+ * {@link BulkApiExceptionHandlerAdvice} handles all {@link BulkApiException}
+ * during a bulk request.
+ *
+ */
 @ControllerAdvice(assignableTypes = BulkApiController.class)
 public class BulkApiExceptionHandlerAdvice {
 
+  /**
+   * Sets the proper HTTP status code and returns the error message.
+   * 
+   * @param servRes
+   *          a {@link HttpServletResponse}
+   * @param exception
+   *          a {@link BulkApiException}
+   * @return an error message
+   */
   @ExceptionHandler(BulkApiException.class)
   @ResponseBody
-  String handleError(HttpServletResponse res, BulkApiException exception) {
-    res.setStatus(exception.getStatus().value());
+  String handleError(HttpServletResponse servRes, BulkApiException exception) {
+    servRes.setStatus(exception.getStatus().value());
 
     return exception.getError();
   }

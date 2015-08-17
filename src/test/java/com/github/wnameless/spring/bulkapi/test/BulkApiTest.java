@@ -32,13 +32,11 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
-import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Base64Utils;
-import org.springframework.web.client.RestTemplate;
 
 import com.github.wnameless.spring.bulkapi.BulkResponse;
 import com.google.gson.Gson;
@@ -49,20 +47,30 @@ import com.google.gson.reflect.TypeToken;
 @WebIntegrationTest
 public class BulkApiTest {
 
-  @Autowired
-  Environment env;
+  @Value("${spring.bulk.api.path:/bulk}")
+  String bulkPath;
 
-  RestTemplate template = new RestTemplate();
   HttpClient client = HttpClientBuilder.create().build();
+
+  private String operationTimes(int times) {
+    String op =
+        "{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
+            + Base64Utils.encodeToString("user:password".getBytes()) + "\"}}";
+    String ops = op;
+
+    while (times > 1) {
+      ops = ops + "," + op;
+      times--;
+    }
+
+    return ops;
+  }
 
   @Test
   public void testBatch() throws Exception {
-    HttpPost post = new HttpPost("http://localhost:8080"
-        + env.getProperty("spring.bulk.api.path", "/bulk"));
+    HttpPost post = new HttpPost("http://localhost:8080" + bulkPath);
     post.setHeader("Content-Type", "application/json");
-    String json =
-        "{\"operations\":[{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
-            + Base64Utils.encodeToString("user:password".getBytes()) + "\"}}]}";
+    String json = "{\"operations\":[" + operationTimes(1000) + "]}";
     HttpEntity entity = new ByteArrayEntity(json.getBytes("UTF-8"));
     post.setEntity(entity);
     HttpResponse response = client.execute(post);
@@ -75,16 +83,9 @@ public class BulkApiTest {
 
   @Test
   public void testOverLimitationError() throws Exception {
-    HttpPost post = new HttpPost("http://localhost:8080"
-        + env.getProperty("spring.bulk.api.path", "/bulk"));
+    HttpPost post = new HttpPost("http://localhost:8080" + bulkPath);
     post.setHeader("Content-Type", "application/json");
-    String json =
-        "{\"operations\":[{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
-            + Base64Utils.encodeToString("user:password".getBytes())
-            + "\"}},{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
-            + Base64Utils.encodeToString("user:password".getBytes())
-            + "\"}},{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
-            + Base64Utils.encodeToString("user:password".getBytes()) + "\"}}]}";
+    String json = "{\"operations\":[" + operationTimes(1001) + "]}";
     HttpEntity entity = new ByteArrayEntity(json.getBytes("UTF-8"));
     post.setEntity(entity);
     HttpResponse response = client.execute(post);
@@ -94,15 +95,12 @@ public class BulkApiTest {
 
   @Test
   public void testSilentMode() throws Exception {
-    HttpPost post = new HttpPost("http://localhost:8080"
-        + env.getProperty("spring.bulk.api.path", "/bulk"));
+    HttpPost post = new HttpPost("http://localhost:8080" + bulkPath);
     post.setHeader("Content-Type", "application/json");
-    String json =
-        "{\"operations\":[{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
-            + Base64Utils.encodeToString("user:password".getBytes())
-            + "\"}},{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
-            + Base64Utils.encodeToString("user:password".getBytes())
-            + "\"},\"silent\":true}]}";
+    String json = "{\"operations\":[" + operationTimes(1)
+        + ",{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
+        + Base64Utils.encodeToString("user:password".getBytes())
+        + "\"},\"silent\":true}]}";
     HttpEntity entity = new ByteArrayEntity(json.getBytes("UTF-8"));
     post.setEntity(entity);
     HttpResponse response = client.execute(post);

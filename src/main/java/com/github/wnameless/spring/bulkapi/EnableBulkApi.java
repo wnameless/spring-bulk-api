@@ -28,6 +28,13 @@ import java.lang.annotation.Target;
 
 import org.springframework.context.annotation.ComponentScan;
 
+/**
+ * 
+ * {@link EnableBulkApi @EnableBulkApi} should be used with Spring
+ * {@link org.springframework.context.annotation.Configuration @Configuration}.
+ * It enables the bulk request support for any Spring RESTful APIs.
+ *
+ */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

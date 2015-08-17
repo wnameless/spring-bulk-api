@@ -22,6 +22,12 @@ package com.github.wnameless.spring.bulkapi;
 
 import org.springframework.http.HttpStatus;
 
+/**
+ * 
+ * {@link BulkApiException} represents all kinds of exceptions during the bulk
+ * request.
+ *
+ */
 public final class BulkApiException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
@@ -29,6 +35,14 @@ public final class BulkApiException extends RuntimeException {
   private final HttpStatus status;
   private final String error;
 
+  /**
+   * Creates a {@link BulkApiException}.
+   * 
+   * @param status
+   *          a {@link HttpStatus}
+   * @param error
+   *          message
+   */
   public BulkApiException(HttpStatus status, String error) {
     if (status == null) throw new NullPointerException();
     if (error == null) throw new NullPointerException();
@@ -37,10 +51,20 @@ public final class BulkApiException extends RuntimeException {
     this.error = error;
   }
 
+  /**
+   * Returns the {@link HttpStatus} of this {@link BulkApiException}.
+   * 
+   * @return a {@link HttpStatus}
+   */
   public HttpStatus getStatus() {
     return status;
   }
 
+  /**
+   * Returns the error message of this {@link BulkApiException}.
+   * 
+   * @return an error message
+   */
   public String getError() {
     return error;
   }

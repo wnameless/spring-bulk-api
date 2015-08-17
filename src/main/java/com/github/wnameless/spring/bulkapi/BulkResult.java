@@ -22,32 +22,70 @@ package com.github.wnameless.spring.bulkapi;
 
 import java.util.Map;
 
+/**
+ * 
+ * {@link BulkResult} contains all details of a RESTful operation outcome.
+ *
+ */
 public final class BulkResult {
 
   private short status;
   private String body;
   private Map<String, String> headers;
 
+  /**
+   * Returns the HTTP status code of a RESTful operation outcome.
+   * 
+   * @return a HTTP status code
+   */
   public short getStatus() {
     return status;
   }
 
+  /**
+   * Sets the HTTP status code of a RESTful operation outcome.
+   * 
+   * @param status
+   *          a HTTP status code
+   */
   public void setStatus(short status) {
     this.status = status;
   }
 
+  /**
+   * Returns the HTTP response body of a RESTful operation outcome.
+   * 
+   * @return a HTTP response body
+   */
   public String getBody() {
     return body;
   }
 
+  /**
+   * Sets the HTTP response body of a RESTful operation outcome.
+   * 
+   * @param body
+   *          a HTTP response body
+   */
   public void setBody(String body) {
     this.body = body;
   }
 
+  /**
+   * Returns headers of a RESTful operation outcome.
+   * 
+   * @return headers of a RESTful operation outcome
+   */
   public Map<String, String> getHeaders() {
     return headers;
   }
 
+  /**
+   * Sets headers of a RESTful operation outcome.
+   * 
+   * @param headers
+   *          headers of a RESTful operation outcome
+   */
   public void setHeaders(Map<String, String> headers) {
     this.headers = headers;
   }
