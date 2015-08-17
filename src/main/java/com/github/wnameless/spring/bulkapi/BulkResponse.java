@@ -41,4 +41,29 @@ public final class BulkResponse {
     this.results = results;
   }
 
+  @Override
+  public int hashCode() {
+    int result = 27;
+
+    result = 31 ^ result + ((results == null) ? 0 : results.hashCode());
+
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) return true;
+    if (obj == null) return false;
+    if (!(obj instanceof BulkResponse)) return false;
+
+    BulkResponse o = (BulkResponse) obj;
+
+    return results == null ? o.results == null : results.equals(o.results);
+  }
+
+  @Override
+  public String toString() {
+    return getClass().getSimpleName() + "{results=" + results + "}";
+  }
+
 }

@@ -59,10 +59,11 @@ public final class BulkApiException extends RuntimeException {
   public boolean equals(Object obj) {
     if (obj == this) return true;
     if (obj == null) return false;
+    if (!(obj instanceof BulkApiException)) return false;
 
     BulkApiException ex = (BulkApiException) obj;
 
-    return ex.status.equals(status) && ex.error.equals(error);
+    return status.equals(ex.status) && error.equals(ex.error);
   }
 
   @Override
