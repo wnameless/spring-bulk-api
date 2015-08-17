@@ -111,4 +111,19 @@ public class BulkApiTest {
     assertEquals(1, res.getResults().size());
   }
 
+  @Test
+  public void testInvalidUrl() throws Exception {
+    HttpPost post = new HttpPost("http://localhost:8080" + bulkPath);
+    post.setHeader("Content-Type", "application/json");
+    String json = "{\"operations\":[" + operationTimes(1)
+        + ",{\"method\":\"GET\",\"url\":\"http://0:0:0:0:0:0:0:1%0:8080/home\",\"headers\":{\"Authorization\":\"Basic "
+        + Base64Utils.encodeToString("user:password".getBytes())
+        + "\"},\"silent\":true}]}";
+    HttpEntity entity = new ByteArrayEntity(json.getBytes("UTF-8"));
+    post.setEntity(entity);
+    HttpResponse response = client.execute(post);
+
+    assertTrue(422 == response.getStatusLine().getStatusCode());
+  }
+
 }

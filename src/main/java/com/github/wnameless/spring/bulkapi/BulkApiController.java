@@ -109,12 +109,11 @@ public class BulkApiController {
   private URI computeUri(HttpServletRequest servReq, BulkOperation op) {
     URI uri;
     try {
-      uri = new URI(
-          (servReq.isSecure() ? "https://" : "http://") + servReq.getLocalAddr()
-              + ":" + servReq.getLocalPort() + op.getUrl());
+      uri = new URI(servReq.getScheme() + "://" + servReq.getServerName() + ":"
+          + servReq.getServerPort() + op.getUrl());
     } catch (URISyntaxException e) {
       throw new BulkApiException(HttpStatus.UNPROCESSABLE_ENTITY,
-          "Invalid URLs exist in this bulk request.");
+          "Invalid URL(" + op.getUrl() + ") exists in this bulk request.");
     }
 
     return uri;
