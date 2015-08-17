@@ -67,7 +67,6 @@ public class BulkApiTest {
     post.setEntity(entity);
     HttpResponse response = client.execute(post);
     String result = EntityUtils.toString(response.getEntity());
-
     BulkResponse res = new Gson().getAdapter(new TypeToken<BulkResponse>() {})
         .fromJson(result);
 
@@ -91,6 +90,27 @@ public class BulkApiTest {
     HttpResponse response = client.execute(post);
 
     assertEquals(413, response.getStatusLine().getStatusCode());
+  }
+
+  @Test
+  public void testSilentMode() throws Exception {
+    HttpPost post = new HttpPost("http://localhost:8080"
+        + env.getProperty("spring.bulk.api.path", "/bulk"));
+    post.setHeader("Content-Type", "application/json");
+    String json =
+        "{\"operations\":[{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
+            + Base64Utils.encodeToString("user:password".getBytes())
+            + "\"}},{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
+            + Base64Utils.encodeToString("user:password".getBytes())
+            + "\"},\"silent\":true}]}";
+    HttpEntity entity = new ByteArrayEntity(json.getBytes("UTF-8"));
+    post.setEntity(entity);
+    HttpResponse response = client.execute(post);
+    String result = EntityUtils.toString(response.getEntity());
+    BulkResponse res = new Gson().getAdapter(new TypeToken<BulkResponse>() {})
+        .fromJson(result);
+
+    assertEquals(1, res.getResults().size());
   }
 
 }

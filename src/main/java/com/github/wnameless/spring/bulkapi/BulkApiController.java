@@ -52,43 +52,64 @@ public class BulkApiController {
 
   @RequestMapping(value = "${spring.bulk.api.path}",
       method = RequestMethod.POST)
-  BulkResponse batch(@RequestBody BulkRequest request,
-      HttpServletRequest servleRequest) throws URISyntaxException, IOException {
-    int max = Integer.valueOf(env.getProperty("spring.bulk.api.limit", "100"));
-    if (request.getOperations().size() > max) {
-      throw new BulkApiException(HttpStatus.PAYLOAD_TOO_LARGE,
-          "Bulk operations exceed the limitation(" + max + ").");
-    }
+  BulkResponse batch(@RequestBody BulkRequest req, HttpServletRequest servReq)
+      throws URISyntaxException, IOException {
+    validateBulkRequest(req);
 
     List<BulkResult> results = new ArrayList<BulkResult>();
     RestTemplate template = new RestTemplate();
-    for (BulkOperation op : request.getOperations()) {
-      BodyBuilder bodyBuilder = RequestEntity.method(httpMethod(op.getMethod()),
-          new URI((servleRequest.isSecure() ? "https://" : "http://")
-              + servleRequest.getLocalAddr() + ":"
-              + servleRequest.getLocalPort() + op.getUrl()));
+    for (BulkOperation op : req.getOperations()) {
+      BodyBuilder bodyBuilder = RequestEntity.method(//
+          httpMethod(op.getMethod()), computeUri(servReq, op));
 
-      for (Entry<String, String> header : op.getHeaders().entrySet()) {
-        bodyBuilder.header(header.getKey(), header.getValue());
-      }
-
-      MultiValueMap<String, Object> params =
-          new LinkedMultiValueMap<String, Object>();
-      for (Entry<String, ?> param : op.getParams().entrySet()) {
-        params.add(param.getKey(), param.getValue());
-      }
-      bodyBuilder.body(params);
+      setHeaders(bodyBuilder, op);
+      setBody(bodyBuilder, op);
 
       ResponseEntity<String> rawRes =
           template.exchange(bodyBuilder.build(), String.class);
-      BulkResult res = new BulkResult();
-      res.setStatus(Short.valueOf(rawRes.getStatusCode().toString()));
-      res.setHeaders(rawRes.getHeaders().toSingleValueMap());
-      res.setBody(rawRes.getBody());
-      results.add(res);
+
+      if (!op.isSilent()) results.add(buldResult(rawRes));
     }
 
     return new BulkResponse(results);
+  }
+
+  private void setBody(BodyBuilder bodyBuilder, BulkOperation op) {
+    MultiValueMap<String, Object> params =
+        new LinkedMultiValueMap<String, Object>();
+    for (Entry<String, ?> param : op.getParams().entrySet()) {
+      params.add(param.getKey(), param.getValue());
+    }
+    bodyBuilder.body(params);
+  }
+
+  private void setHeaders(BodyBuilder bodyBuilder, BulkOperation op) {
+    for (Entry<String, String> header : op.getHeaders().entrySet()) {
+      bodyBuilder.header(header.getKey(), header.getValue());
+    }
+  }
+
+  private URI computeUri(HttpServletRequest servReq, BulkOperation op)
+      throws URISyntaxException {
+    return new URI((servReq.isSecure() ? "https://" : "http://")
+        + servReq.getLocalAddr() + ":" + servReq.getLocalPort() + op.getUrl());
+  }
+
+  private BulkResult buldResult(ResponseEntity<String> rawRes) {
+    BulkResult res = new BulkResult();
+    res.setStatus(Short.valueOf(rawRes.getStatusCode().toString()));
+    res.setHeaders(rawRes.getHeaders().toSingleValueMap());
+    res.setBody(rawRes.getBody());
+
+    return res;
+  }
+
+  private void validateBulkRequest(BulkRequest req) {
+    int max = Integer.valueOf(env.getProperty("spring.bulk.api.limit", "100"));
+    if (req.getOperations().size() > max) {
+      throw new BulkApiException(HttpStatus.PAYLOAD_TOO_LARGE,
+          "Bulk operations exceed the limitation(" + max + ").");
+    }
   }
 
   private static HttpMethod httpMethod(String method) {
