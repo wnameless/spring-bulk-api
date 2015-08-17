@@ -20,7 +20,8 @@
  */
 package com.github.wnameless.spring.bulkapi;
 
-import java.io.IOException;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -40,7 +41,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -50,10 +50,9 @@ public class BulkApiController {
   @Autowired
   Environment env;
 
-  @RequestMapping(value = "${spring.bulk.api.path}",
-      method = RequestMethod.POST)
-  BulkResponse batch(@RequestBody BulkRequest req, HttpServletRequest servReq)
-      throws URISyntaxException, IOException {
+  @RequestMapping(value = "${spring.bulk.api.path}", method = POST)
+  BulkResponse bulk(@RequestBody BulkRequest req, HttpServletRequest servReq)
+      throws URISyntaxException {
     validateBulkRequest(req);
 
     List<BulkResult> results = new ArrayList<BulkResult>();
