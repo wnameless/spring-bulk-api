@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.wnameless</groupId>
 	<artifactId>spring-batch-api</artifactId>
-	<version>0.2.0</version>
+	<version>0.2.1-SNAPSHOT</version>
 
 	<name>spring-batch-api</name>
 	<description>Add bulk operations support to any Spring RESTful API by a single annotation @EnableBulkApi.</description>
@@ -21,7 +21,7 @@
 		<connection>scm:git:git@github.com:wnameless/spring-bulk-api.git</connection>
 		<developerConnection>scm:git:git@github.com:wnameless/spring-bulk-api.git</developerConnection>
 		<url>git@github.com:wnameless/spring-bulk-api.git</url>
-		<tag>spring-batch-api-0.2.0</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<distributionManagement>
