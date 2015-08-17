@@ -29,6 +29,14 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProce
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * 
+ * {@link BulkApiConfig} implements the
+ * {@link BeanDefinitionRegistryPostProcessor} which helps the user to load
+ * {@link BulkApiController} and {@link BulkApiExceptionHandlerAdvice} after
+ * adding the {@link EnableBulkApi @EnableBulkApi} annotation to the Web App.
+ *
+ */
 @Configuration
 public class BulkApiConfig implements BeanDefinitionRegistryPostProcessor {
 
