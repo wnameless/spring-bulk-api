@@ -20,55 +20,19 @@
  */
 package com.github.wnameless.spring.bulkapi;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class BulkRequest {
 
-  private String url;
-  private String method = "GET";
-  private Map<String, ?> params = new LinkedHashMap<String, Object>();
-  private Map<String, String> headers = new LinkedHashMap<String, String>();
-  private boolean silent = false;
+  private List<BulkOperation> operations = new ArrayList<BulkOperation>();
 
-  public String getUrl() {
-    return url;
+  public List<BulkOperation> getOperations() {
+    return operations;
   }
 
-  public void setUrl(String url) {
-    this.url = url;
-  }
-
-  public String getMethod() {
-    return method;
-  }
-
-  public void setMethod(String method) {
-    this.method = method;
-  }
-
-  public Map<String, ?> getParams() {
-    return params;
-  }
-
-  public void setParams(Map<String, ?> params) {
-    this.params = params;
-  }
-
-  public Map<String, String> getHeaders() {
-    return headers;
-  }
-
-  public void setHeaders(Map<String, String> headers) {
-    this.headers = headers;
-  }
-
-  public boolean isSilent() {
-    return silent;
-  }
-
-  public void setSilent(boolean silent) {
-    this.silent = silent;
+  public void setOperations(List<BulkOperation> operations) {
+    this.operations = operations;
   }
 
 }

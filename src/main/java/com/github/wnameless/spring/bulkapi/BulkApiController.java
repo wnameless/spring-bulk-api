@@ -52,44 +52,43 @@ public class BulkApiController {
 
   @RequestMapping(value = "${spring.bulk.api.path}",
       method = RequestMethod.POST)
-  List<BulkResponse> batch(@RequestBody List<BulkRequest> requests,
+  BulkResponse batch(@RequestBody BulkRequest request,
       HttpServletRequest servleRequest) throws URISyntaxException, IOException {
     int max = Integer.valueOf(env.getProperty("spring.bulk.api.limit", "100"));
-    if (requests.size() > max) {
+    if (request.getOperations().size() > max) {
       throw new BulkApiException(HttpStatus.PAYLOAD_TOO_LARGE,
-          "Batch requests exceed the limitation(" + max + ").");
+          "Bulk operations exceed the limitation(" + max + ").");
     }
 
-    List<BulkResponse> responses = new ArrayList<BulkResponse>();
+    List<BulkResult> results = new ArrayList<BulkResult>();
     RestTemplate template = new RestTemplate();
-    for (BulkRequest request : requests) {
-      BodyBuilder bodyBuilder =
-          RequestEntity.method(httpMethod(request.getMethod()),
-              new URI((servleRequest.isSecure() ? "https://" : "http://")
-                  + servleRequest.getLocalAddr() + ":"
-                  + servleRequest.getLocalPort() + request.getUrl()));
+    for (BulkOperation op : request.getOperations()) {
+      BodyBuilder bodyBuilder = RequestEntity.method(httpMethod(op.getMethod()),
+          new URI((servleRequest.isSecure() ? "https://" : "http://")
+              + servleRequest.getLocalAddr() + ":"
+              + servleRequest.getLocalPort() + op.getUrl()));
 
-      for (Entry<String, String> header : request.getHeaders().entrySet()) {
+      for (Entry<String, String> header : op.getHeaders().entrySet()) {
         bodyBuilder.header(header.getKey(), header.getValue());
       }
 
       MultiValueMap<String, Object> params =
           new LinkedMultiValueMap<String, Object>();
-      for (Entry<String, ?> param : request.getParams().entrySet()) {
+      for (Entry<String, ?> param : op.getParams().entrySet()) {
         params.add(param.getKey(), param.getValue());
       }
       bodyBuilder.body(params);
 
       ResponseEntity<String> rawRes =
           template.exchange(bodyBuilder.build(), String.class);
-      BulkResponse res = new BulkResponse();
+      BulkResult res = new BulkResult();
       res.setStatus(Short.valueOf(rawRes.getStatusCode().toString()));
       res.setHeaders(rawRes.getHeaders().toSingleValueMap());
       res.setBody(rawRes.getBody());
-      responses.add(res);
+      results.add(res);
     }
 
-    return responses;
+    return new BulkResponse(results);
   }
 
   private static HttpMethod httpMethod(String method) {

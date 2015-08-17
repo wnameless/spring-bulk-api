@@ -20,25 +20,36 @@
  */
 package com.github.wnameless.spring.bulkapi;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
-public final class BulkResponse {
+public final class BulkResult {
 
-  private List<BulkResult> results = new ArrayList<BulkResult>();
+  private short status;
+  private String body;
+  private Map<String, String> headers;
 
-  public BulkResponse() {}
-
-  public BulkResponse(List<BulkResult> results) {
-    this.results = results;
+  public short getStatus() {
+    return status;
   }
 
-  public List<BulkResult> getResults() {
-    return results;
+  public void setStatus(short status) {
+    this.status = status;
   }
 
-  public void setResults(List<BulkResult> results) {
-    this.results = results;
+  public String getBody() {
+    return body;
+  }
+
+  public void setBody(String body) {
+    this.body = body;
+  }
+
+  public Map<String, String> getHeaders() {
+    return headers;
+  }
+
+  public void setHeaders(Map<String, String> headers) {
+    this.headers = headers;
   }
 
 }

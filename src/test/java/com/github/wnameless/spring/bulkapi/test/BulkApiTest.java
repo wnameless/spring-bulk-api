@@ -23,9 +23,6 @@ package com.github.wnameless.spring.bulkapi.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -35,12 +32,15 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.client.RestTemplate;
 
+import com.github.wnameless.spring.bulkapi.BulkResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -49,38 +49,43 @@ import com.google.gson.reflect.TypeToken;
 @WebIntegrationTest
 public class BulkApiTest {
 
+  @Autowired
+  Environment env;
+
   RestTemplate template = new RestTemplate();
   HttpClient client = HttpClientBuilder.create().build();
 
   @Test
   public void testBatch() throws Exception {
-    HttpPost post = new HttpPost("http://localhost:8080/bulk");
+    HttpPost post = new HttpPost("http://localhost:8080"
+        + env.getProperty("spring.bulk.api.path", "/bulk"));
     post.setHeader("Content-Type", "application/json");
     String json =
-        "[{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
-            + Base64Utils.encodeToString("user:password".getBytes()) + "\"}}]";
+        "{\"operations\":[{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
+            + Base64Utils.encodeToString("user:password".getBytes()) + "\"}}]}";
     HttpEntity entity = new ByteArrayEntity(json.getBytes("UTF-8"));
     post.setEntity(entity);
     HttpResponse response = client.execute(post);
     String result = EntityUtils.toString(response.getEntity());
 
-    List<Map<String, ?>> res = new Gson()
-        .getAdapter(new TypeToken<List<Map<String, ?>>>() {}).fromJson(result);
+    BulkResponse res = new Gson().getAdapter(new TypeToken<BulkResponse>() {})
+        .fromJson(result);
 
-    assertTrue(200 == Double.valueOf(res.get(0).get("status").toString()));
+    assertTrue(200 == Double.valueOf(res.getResults().get(0).getStatus()));
   }
 
   @Test
   public void testOverLimitationError() throws Exception {
-    HttpPost post = new HttpPost("http://localhost:8080/bulk");
+    HttpPost post = new HttpPost("http://localhost:8080"
+        + env.getProperty("spring.bulk.api.path", "/bulk"));
     post.setHeader("Content-Type", "application/json");
     String json =
-        "[{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
+        "{\"operations\":[{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
             + Base64Utils.encodeToString("user:password".getBytes())
             + "\"}},{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
             + Base64Utils.encodeToString("user:password".getBytes())
             + "\"}},{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
-            + Base64Utils.encodeToString("user:password".getBytes()) + "\"}}]";
+            + Base64Utils.encodeToString("user:password".getBytes()) + "\"}}]}";
     HttpEntity entity = new ByteArrayEntity(json.getBytes("UTF-8"));
     post.setEntity(entity);
     HttpResponse response = client.execute(post);
