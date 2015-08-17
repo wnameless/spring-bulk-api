@@ -20,16 +20,14 @@
  */
 package com.github.wnameless.spring.batchapi.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
@@ -52,12 +50,10 @@ import com.google.gson.reflect.TypeToken;
 public class BatchApiTest {
 
   RestTemplate template = new RestTemplate();
+  HttpClient client = HttpClientBuilder.create().build();
 
   @Test
-  public void testBatch()
-      throws URISyntaxException, ParseException, IOException {
-    HttpClient client = HttpClientBuilder.create().build();
-
+  public void testBatch() throws Exception {
     HttpPost post = new HttpPost("http://localhost:8080/batch");
     post.setHeader("Content-Type", "application/json");
     String json =
@@ -72,6 +68,24 @@ public class BatchApiTest {
         .getAdapter(new TypeToken<List<Map<String, ?>>>() {}).fromJson(result);
 
     assertTrue(200 == Double.valueOf(res.get(0).get("status").toString()));
+  }
+
+  @Test
+  public void testOverLimitationError() throws Exception {
+    HttpPost post = new HttpPost("http://localhost:8080/batch");
+    post.setHeader("Content-Type", "application/json");
+    String json =
+        "[{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
+            + Base64Utils.encodeToString("user:password".getBytes())
+            + "\"}},{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
+            + Base64Utils.encodeToString("user:password".getBytes())
+            + "\"}},{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
+            + Base64Utils.encodeToString("user:password".getBytes()) + "\"}}]";
+    HttpEntity entity = new ByteArrayEntity(json.getBytes("UTF-8"));
+    post.setEntity(entity);
+    HttpResponse response = client.execute(post);
+
+    assertEquals(413, response.getStatusLine().getStatusCode());
   }
 
 }

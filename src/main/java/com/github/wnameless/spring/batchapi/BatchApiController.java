@@ -29,7 +29,10 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.RequestEntity.BodyBuilder;
 import org.springframework.http.ResponseEntity;
@@ -44,9 +47,19 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 public class BatchApiController {
 
-  @RequestMapping(value = "/batch", method = RequestMethod.POST)
+  @Autowired
+  Environment env;
+
+  @RequestMapping(value = "${spring.batch.api.path}",
+      method = RequestMethod.POST)
   List<BatchResponse> batch(@RequestBody List<BatchRequest> requests,
       HttpServletRequest servleRequest) throws URISyntaxException, IOException {
+    int max = Integer.valueOf(env.getProperty("spring.batch.api.limit", "100"));
+    if (requests.size() > max) {
+      throw new BatchApiException(HttpStatus.PAYLOAD_TOO_LARGE,
+          "Batch requests exceed the limitation(" + max + ").");
+    }
+
     List<BatchResponse> responses = new ArrayList<BatchResponse>();
     RestTemplate template = new RestTemplate();
     for (BatchRequest request : requests) {
