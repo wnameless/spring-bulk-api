@@ -93,11 +93,9 @@ public final class BulkResult {
   @Override
   public int hashCode() {
     int result = 27;
-
     result = 31 ^ result + status;
     result = 31 ^ result + ((body == null) ? 0 : body.hashCode());
     result = 31 ^ result + ((headers == null) ? 0 : headers.hashCode());
-
     return result;
   }
 
@@ -106,9 +104,7 @@ public final class BulkResult {
     if (obj == this) return true;
     if (obj == null) return false;
     if (!(obj instanceof BulkResult)) return false;
-
     BulkResult o = (BulkResult) obj;
-
     return status == o.status
         && (body == null ? o.body == null : body.equals(o.body))
         && (headers == null ? o.headers == null : headers.equals(o.headers));

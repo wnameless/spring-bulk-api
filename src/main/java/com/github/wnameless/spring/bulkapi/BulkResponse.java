@@ -69,9 +69,7 @@ public final class BulkResponse {
   @Override
   public int hashCode() {
     int result = 27;
-
     result = 31 ^ result + ((results == null) ? 0 : results.hashCode());
-
     return result;
   }
 
@@ -80,9 +78,7 @@ public final class BulkResponse {
     if (obj == this) return true;
     if (obj == null) return false;
     if (!(obj instanceof BulkResponse)) return false;
-
     BulkResponse o = (BulkResponse) obj;
-
     return results == null ? o.results == null : results.equals(o.results);
   }
 

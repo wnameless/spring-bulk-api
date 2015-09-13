@@ -107,11 +107,17 @@ public class BulkApiController {
   private URI computeUri(HttpServletRequest servReq, BulkOperation op) {
     URI uri;
     try {
-      uri = new URI(servReq.getScheme() + "://" + servReq.getServerName() + ":"
-          + servReq.getServerPort() + op.getUrl());
+      String rawUrl = servReq.getRequestURL().toString();
+      String rawUri = servReq.getRequestURI().toString();
+      String servletPath = rawUrl.substring(0, rawUrl.indexOf(rawUri));
+      if (op.getUrl().startsWith("/")) {
+        uri = new URI(servletPath + op.getUrl());
+      } else {
+        uri = new URI(servletPath + "/" + op.getUrl());
+      }
     } catch (URISyntaxException e) {
       throw new BulkApiException(HttpStatus.UNPROCESSABLE_ENTITY,
-          "Invalid URL(" + op.getUrl() + ") exists in this bulk request.");
+          "Invalid URL(" + op.getUrl() + ") exists in this bulk request");
     }
 
     return uri;
@@ -131,7 +137,7 @@ public class BulkApiController {
     int max = Integer.valueOf(env.getProperty("spring.bulk.api.limit", "100"));
     if (req.getOperations().size() > max) {
       throw new BulkApiException(HttpStatus.PAYLOAD_TOO_LARGE,
-          "Bulk operations exceed the limitation(" + max + ").");
+          "Bulk operations exceed the limitation(" + max + ")");
     }
 
     // Check if any invalid URL exists

@@ -3,3 +3,8 @@ Version 0.1.0
 
 Version 0.2.0
 + Fix the significant failure by replacing @ComponentScan to BeanDefinitionRegistryPostProcessor
+
+Version 0.3.0
+* Change group ID form com.github.wnameless to com.github.wnameless.spring
++ Fix the significant failure when port of any request is missing
++ Allow user to omit the very first character "/" in each bulk operation url

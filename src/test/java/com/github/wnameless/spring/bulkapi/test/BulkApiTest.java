@@ -53,13 +53,17 @@ public class BulkApiTest {
   HttpClient client = HttpClientBuilder.create().build();
 
   private String operationTimes(int times) {
+    times--;
+
+    String ops =
+        "{\"method\":\"GET\",\"url\":\"home\",\"headers\":{\"Authorization\":\"Basic "
+            + Base64Utils.encodeToString("user:password".getBytes()) + "\"}}";
     String op =
         "{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
             + Base64Utils.encodeToString("user:password".getBytes()) + "\"}}";
-    String ops = op;
 
-    while (times > 1) {
-      ops = ops + "," + op;
+    while (times > 0) {
+      ops += "," + op;
       times--;
     }
 

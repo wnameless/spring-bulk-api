@@ -54,9 +54,7 @@ public final class BulkRequest {
   @Override
   public int hashCode() {
     int result = 27;
-
     result = 31 ^ result + ((operations == null) ? 0 : operations.hashCode());
-
     return result;
   }
 
@@ -65,9 +63,7 @@ public final class BulkRequest {
     if (obj == this) return true;
     if (obj == null) return false;
     if (!(obj instanceof BulkRequest)) return false;
-
     BulkRequest o = (BulkRequest) obj;
-
     return operations == null ? o.operations == null
         : operations.equals(o.operations);
   }

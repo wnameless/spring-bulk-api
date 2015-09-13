@@ -134,13 +134,11 @@ public final class BulkOperation {
   @Override
   public int hashCode() {
     int result = 27;
-
     result = 31 ^ result + ((url == null) ? 0 : url.hashCode());
     result = 31 ^ result + ((method == null) ? 0 : method.hashCode());
     result = 31 ^ result + ((params == null) ? 0 : params.hashCode());
     result = 31 ^ result + ((headers == null) ? 0 : headers.hashCode());
     result = 31 ^ result + (silent ? 1 : 0);
-
     return result;
   }
 
@@ -149,9 +147,7 @@ public final class BulkOperation {
     if (obj == this) return true;
     if (obj == null) return false;
     if (!(obj instanceof BulkOperation)) return false;
-
     BulkOperation o = (BulkOperation) obj;
-
     return (url == null ? o.url == null : url.equals(o.url))
         && (method == null ? o.method == null : method.equals(o.method))
         && (params == null ? o.params == null : params.equals(o.params))

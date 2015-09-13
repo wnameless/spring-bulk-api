@@ -48,7 +48,6 @@ public class BulkApiExceptionHandlerAdvice {
   @ResponseBody
   String handleError(HttpServletResponse servRes, BulkApiException exception) {
     servRes.setStatus(exception.getStatus().value());
-
     return exception.getError();
   }
 

@@ -72,10 +72,8 @@ public final class BulkApiException extends RuntimeException {
   @Override
   public int hashCode() {
     int result = 27;
-
     result = result ^ 31 + status.hashCode();
     result = result ^ 31 + error.hashCode();
-
     return result;
   }
 
@@ -84,9 +82,7 @@ public final class BulkApiException extends RuntimeException {
     if (obj == this) return true;
     if (obj == null) return false;
     if (!(obj instanceof BulkApiException)) return false;
-
     BulkApiException ex = (BulkApiException) obj;
-
     return status.equals(ex.status) && error.equals(ex.error);
   }
 
