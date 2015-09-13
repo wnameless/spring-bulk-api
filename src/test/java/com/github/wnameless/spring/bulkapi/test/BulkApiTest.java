@@ -17,6 +17,11 @@
  */
 package com.github.wnameless.spring.bulkapi.test;
 
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanConstructor;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidBeanToStringExcluding;
+import static com.google.code.beanmatchers.BeanMatchers.hasValidGettersAndSetters;
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -35,9 +40,16 @@ import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Base64Utils;
 
+import com.github.wnameless.spring.bulkapi.BulkApiException;
+import com.github.wnameless.spring.bulkapi.BulkOperation;
+import com.github.wnameless.spring.bulkapi.BulkRequest;
 import com.github.wnameless.spring.bulkapi.BulkResponse;
+import com.github.wnameless.spring.bulkapi.BulkResult;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
@@ -48,6 +60,29 @@ public class BulkApiTest {
   String bulkPath;
 
   HttpClient client = HttpClientBuilder.create().build();
+
+  @Test
+  public void testBeans() {
+    assertThat(BulkOperation.class, allOf(hasValidBeanConstructor(),
+        hasValidGettersAndSetters(), hasValidBeanToStringExcluding()));
+    EqualsVerifier.forClass(BulkOperation.class)
+        .suppress(Warning.NONFINAL_FIELDS).verify();
+    assertThat(BulkRequest.class, allOf(hasValidBeanConstructor(),
+        hasValidGettersAndSetters(), hasValidBeanToStringExcluding()));
+    EqualsVerifier.forClass(BulkRequest.class).suppress(Warning.NONFINAL_FIELDS)
+        .verify();
+    assertThat(BulkResponse.class, allOf(hasValidBeanConstructor(),
+        hasValidGettersAndSetters(), hasValidBeanToStringExcluding()));
+    EqualsVerifier.forClass(BulkResponse.class)
+        .suppress(Warning.NONFINAL_FIELDS).verify();
+    assertThat(BulkResult.class, allOf(hasValidBeanConstructor(),
+        hasValidGettersAndSetters(), hasValidBeanToStringExcluding()));
+    EqualsVerifier.forClass(BulkResult.class).suppress(Warning.NONFINAL_FIELDS)
+        .verify();
+
+    EqualsVerifier.forClass(BulkApiException.class)
+        .suppress(Warning.NULL_FIELDS).verify();
+  }
 
   private String operationTimes(int times) {
     times--;
