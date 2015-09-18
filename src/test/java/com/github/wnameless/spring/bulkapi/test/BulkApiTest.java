@@ -32,6 +32,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +41,7 @@ import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Base64Utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.wnameless.spring.bulkapi.BulkApiException;
 import com.github.wnameless.spring.bulkapi.BulkOperation;
 import com.github.wnameless.spring.bulkapi.BulkRequest;
@@ -60,6 +62,15 @@ public class BulkApiTest {
   String bulkPath;
 
   HttpClient client = HttpClientBuilder.create().build();
+  HttpPost post;
+
+  ObjectMapper mapper = new ObjectMapper();
+
+  @Before
+  public void setUp() {
+    post = new HttpPost("http://localhost:8080" + bulkPath);
+    post.setHeader("Content-Type", "application/json");
+  }
 
   @Test
   public void testBeans() {
@@ -104,8 +115,6 @@ public class BulkApiTest {
 
   @Test
   public void testBatch() throws Exception {
-    HttpPost post = new HttpPost("http://localhost:8080" + bulkPath);
-    post.setHeader("Content-Type", "application/json");
     String json = "{\"operations\":[" + operationTimes(1000) + "]}";
     HttpEntity entity = new ByteArrayEntity(json.getBytes("UTF-8"));
     post.setEntity(entity);
@@ -120,8 +129,6 @@ public class BulkApiTest {
 
   @Test
   public void testOverLimitationError() throws Exception {
-    HttpPost post = new HttpPost("http://localhost:8080" + bulkPath);
-    post.setHeader("Content-Type", "application/json");
     String json = "{\"operations\":[" + operationTimes(1001) + "]}";
     HttpEntity entity = new ByteArrayEntity(json.getBytes("UTF-8"));
     post.setEntity(entity);
@@ -132,8 +139,6 @@ public class BulkApiTest {
 
   @Test
   public void testSilentMode() throws Exception {
-    HttpPost post = new HttpPost("http://localhost:8080" + bulkPath);
-    post.setHeader("Content-Type", "application/json");
     String json = "{\"operations\":[" + operationTimes(1)
         + ",{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
         + Base64Utils.encodeToString("user:password".getBytes())
@@ -150,13 +155,29 @@ public class BulkApiTest {
 
   @Test
   public void testInvalidUrl() throws Exception {
-    HttpPost post = new HttpPost("http://localhost:8080" + bulkPath);
-    post.setHeader("Content-Type", "application/json");
     String json = "{\"operations\":[" + operationTimes(1)
         + ",{\"method\":\"GET\",\"url\":\"http://0:0:0:0:0:0:0:1%0:8080/home\",\"headers\":{\"Authorization\":\"Basic "
         + Base64Utils.encodeToString("user:password".getBytes())
         + "\"},\"silent\":true}]}";
     HttpEntity entity = new ByteArrayEntity(json.getBytes("UTF-8"));
+    post.setEntity(entity);
+    HttpResponse response = client.execute(post);
+
+    assertTrue(422 == response.getStatusLine().getStatusCode());
+  }
+
+  @Test
+  public void bulkRequestCanNotContainBulkPathAsUrl() throws Exception {
+    BulkRequest req = new BulkRequest();
+    BulkOperation op = new BulkOperation();
+    op.setUrl(bulkPath);
+    op.setMethod("GET");
+    op.getHeaders().put("Authorization",
+        "Basic " + Base64Utils.encodeToString("user:password".getBytes()));
+    req.getOperations().add(op);
+
+    HttpEntity entity =
+        new ByteArrayEntity(mapper.writeValueAsString(req).getBytes("UTF-8"));
     post.setEntity(entity);
     HttpResponse response = client.execute(post);
 
