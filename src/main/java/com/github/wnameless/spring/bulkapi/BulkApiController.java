@@ -17,6 +17,8 @@
  */
 package com.github.wnameless.spring.bulkapi;
 
+import static org.springframework.http.HttpStatus.PAYLOAD_TOO_LARGE;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import java.net.URI;
@@ -30,7 +32,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.RequestEntity.BodyBuilder;
 import org.springframework.http.ResponseEntity;
@@ -102,10 +103,18 @@ public class BulkApiController {
   }
 
   private URI computeUri(HttpServletRequest servReq, BulkOperation op) {
+    String rawUrl = servReq.getRequestURL().toString();
+    String rawUri = servReq.getRequestURI().toString();
+
+    String bulkPath = env.getProperty("spring.bulk.api.path", "/bulk");
+    if (op.getUrl() == null || op.getUrl().startsWith(bulkPath)
+        || op.getUrl().startsWith(bulkPath.substring(1))) {
+      throw new BulkApiException(UNPROCESSABLE_ENTITY,
+          "Invalid URL(" + rawUri + ") exists in this bulk request");
+    }
+
     URI uri;
     try {
-      String rawUrl = servReq.getRequestURL().toString();
-      String rawUri = servReq.getRequestURI().toString();
       String servletPath = rawUrl.substring(0, rawUrl.indexOf(rawUri));
       if (op.getUrl().startsWith("/")) {
         uri = new URI(servletPath + op.getUrl());
@@ -113,7 +122,7 @@ public class BulkApiController {
         uri = new URI(servletPath + "/" + op.getUrl());
       }
     } catch (URISyntaxException e) {
-      throw new BulkApiException(HttpStatus.UNPROCESSABLE_ENTITY,
+      throw new BulkApiException(UNPROCESSABLE_ENTITY,
           "Invalid URL(" + op.getUrl() + ") exists in this bulk request");
     }
 
@@ -131,9 +140,9 @@ public class BulkApiController {
 
   private void validateBulkRequest(BulkRequest req,
       HttpServletRequest servReq) {
-    int max = Integer.valueOf(env.getProperty("spring.bulk.api.limit", "100"));
+    int max = env.getProperty("spring.bulk.api.limit", int.class, 100);
     if (req.getOperations().size() > max) {
-      throw new BulkApiException(HttpStatus.PAYLOAD_TOO_LARGE,
+      throw new BulkApiException(PAYLOAD_TOO_LARGE,
           "Bulk operations exceed the limitation(" + max + ")");
     }
 
