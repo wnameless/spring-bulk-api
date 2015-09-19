@@ -71,6 +71,9 @@ public class BulkApiTest {
   @Autowired
   ApplicationContext appCtx;
 
+  String authHeader =
+      "Basic " + Base64Utils.encodeToString("user:password".getBytes());
+
   @Before
   public void setUp() {
     post = new HttpPost("http://localhost:8080" + bulkPath);
@@ -100,28 +103,34 @@ public class BulkApiTest {
         .suppress(Warning.NULL_FIELDS).verify();
   }
 
-  private String operationTimes(int times) {
+  private BulkRequest operationTimes(int times) {
+    BulkRequest req = new BulkRequest();
+    BulkOperation op = new BulkOperation();
+
     times--;
 
-    String ops =
-        "{\"method\":\"GET\",\"url\":\"home\",\"headers\":{\"Authorization\":\"Basic "
-            + Base64Utils.encodeToString("user:password".getBytes()) + "\"}}";
-    String op =
-        "{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
-            + Base64Utils.encodeToString("user:password".getBytes()) + "\"}}";
+    op.setMethod("GET");
+    op.setUrl("home");
+    op.getHeaders().put("Authorization", authHeader);
+    req.getOperations().add(op);
 
     while (times > 0) {
-      ops += "," + op;
+      op = new BulkOperation();
+      op.setMethod("GET");
+      op.setUrl("/home");
+      op.getHeaders().put("Authorization", authHeader);
+      req.getOperations().add(op);
+
       times--;
     }
 
-    return ops;
+    return req;
   }
 
   @Test
   public void testBatch() throws Exception {
-    String json = "{\"operations\":[" + operationTimes(1000) + "]}";
-    HttpEntity entity = new ByteArrayEntity(json.getBytes("UTF-8"));
+    HttpEntity entity = new ByteArrayEntity(
+        mapper.writeValueAsString(operationTimes(1000)).getBytes("UTF-8"));
     post.setEntity(entity);
     HttpResponse response = client.execute(post);
     String result = EntityUtils.toString(response.getEntity());
@@ -134,8 +143,8 @@ public class BulkApiTest {
 
   @Test
   public void testOverLimitationError() throws Exception {
-    String json = "{\"operations\":[" + operationTimes(1001) + "]}";
-    HttpEntity entity = new ByteArrayEntity(json.getBytes("UTF-8"));
+    HttpEntity entity = new ByteArrayEntity(
+        mapper.writeValueAsString(operationTimes(1001)).getBytes("UTF-8"));
     post.setEntity(entity);
     HttpResponse response = client.execute(post);
 
@@ -144,11 +153,16 @@ public class BulkApiTest {
 
   @Test
   public void testSilentMode() throws Exception {
-    String json = "{\"operations\":[" + operationTimes(1)
-        + ",{\"method\":\"GET\",\"url\":\"/home\",\"headers\":{\"Authorization\":\"Basic "
-        + Base64Utils.encodeToString("user:password".getBytes())
-        + "\"},\"silent\":true}]}";
-    HttpEntity entity = new ByteArrayEntity(json.getBytes("UTF-8"));
+    BulkRequest req = operationTimes(1);
+    BulkOperation op = new BulkOperation();
+    op.setMethod("GET");
+    op.setUrl("/home");
+    op.getHeaders().put("Authorization", authHeader);
+    op.setSilent(true);
+    req.getOperations().add(op);
+
+    HttpEntity entity =
+        new ByteArrayEntity(mapper.writeValueAsString(req).getBytes("UTF-8"));
     post.setEntity(entity);
     HttpResponse response = client.execute(post);
     String result = EntityUtils.toString(response.getEntity());
@@ -160,11 +174,15 @@ public class BulkApiTest {
 
   @Test
   public void testInvalidUrl() throws Exception {
-    String json = "{\"operations\":[" + operationTimes(1)
-        + ",{\"method\":\"GET\",\"url\":\"http://0:0:0:0:0:0:0:1%0:8080/home\",\"headers\":{\"Authorization\":\"Basic "
-        + Base64Utils.encodeToString("user:password".getBytes())
-        + "\"},\"silent\":true}]}";
-    HttpEntity entity = new ByteArrayEntity(json.getBytes("UTF-8"));
+    BulkRequest req = operationTimes(1);
+    BulkOperation op = new BulkOperation();
+    op.setMethod("GET");
+    op.setUrl("http://0:0:0:0:0:0:0:1%0:8080/home");
+    op.getHeaders().put("Authorization", authHeader);
+    req.getOperations().add(op);
+
+    HttpEntity entity =
+        new ByteArrayEntity(mapper.writeValueAsString(req).getBytes("UTF-8"));
     post.setEntity(entity);
     HttpResponse response = client.execute(post);
 
