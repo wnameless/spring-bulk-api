@@ -51,6 +51,9 @@ import org.springframework.web.client.RestTemplate;
 public class BulkApiController {
 
   @Autowired
+  BulkApiValidator validator;
+
+  @Autowired
   Environment env;
 
   /**
@@ -124,6 +127,19 @@ public class BulkApiController {
     } catch (URISyntaxException e) {
       throw new BulkApiException(UNPROCESSABLE_ENTITY,
           "Invalid URL(" + op.getUrl() + ") exists in this bulk request");
+    }
+
+    if (op.getUrl().startsWith("/")) {
+      if (!validator.validatePath(op.getUrl(), httpMethod(op.getMethod()))) {
+        throw new BulkApiException(UNPROCESSABLE_ENTITY,
+            "Invalid URL(" + op.getUrl() + ") exists in this bulk request");
+      }
+    } else {
+      if (!validator.validatePath("/" + op.getUrl(),
+          httpMethod(op.getMethod()))) {
+        throw new BulkApiException(UNPROCESSABLE_ENTITY,
+            "Invalid URL(" + op.getUrl() + ") exists in this bulk request");
+      }
     }
 
     return uri;

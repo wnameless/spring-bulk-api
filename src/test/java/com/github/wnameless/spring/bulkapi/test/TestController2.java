@@ -21,22 +21,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.github.wnameless.spring.bulkapi.Bulkable;
-
-@Bulkable
 @Controller
-public class TestController {
+public class TestController2 {
 
-  @RequestMapping("/home")
+  @RequestMapping("/home3")
   @ResponseBody
   String home() {
     return "HAHA";
-  }
-
-  @RequestMapping("/home2/${aaa:a}/{dd}")
-  @ResponseBody
-  String home2() {
-    return "YAYA";
   }
 
 }

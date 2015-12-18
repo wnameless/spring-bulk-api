@@ -44,6 +44,10 @@ public class BulkApiConfig implements BeanDefinitionRegistryPostProcessor {
   @Override
   public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry)
       throws BeansException {
+    BeanDefinition validatorBeanDef = new RootBeanDefinition(
+        BulkApiValidator.class, Autowire.BY_TYPE.value(), true);
+    registry.registerBeanDefinition("bulkApiValidator", validatorBeanDef);
+
     BeanDefinition ctrlBeanDef = new RootBeanDefinition(BulkApiController.class,
         Autowire.BY_TYPE.value(), true);
     registry.registerBeanDefinition("bulkApiController", ctrlBeanDef);

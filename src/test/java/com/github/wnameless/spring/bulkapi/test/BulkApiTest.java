@@ -25,6 +25,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -195,6 +196,62 @@ public class BulkApiTest {
     BulkOperation op = new BulkOperation();
     op.setUrl(bulkPath);
     op.setMethod("GET");
+    op.getHeaders().put("Authorization",
+        "Basic " + Base64Utils.encodeToString("user:password".getBytes()));
+    req.getOperations().add(op);
+
+    HttpEntity entity =
+        new ByteArrayEntity(mapper.writeValueAsString(req).getBytes("UTF-8"));
+    post.setEntity(entity);
+    HttpResponse response = client.execute(post);
+
+    assertTrue(422 == response.getStatusLine().getStatusCode());
+  }
+
+  @Test
+  public void bulkRequestToComplexMapping() throws Exception {
+    BulkRequest req = new BulkRequest();
+    BulkOperation op = new BulkOperation();
+    op.setUrl("/home2/AAA/ccc");
+    op.setMethod("PUT");
+    op.getHeaders().put("Authorization",
+        "Basic " + Base64Utils.encodeToString("user:password".getBytes()));
+    req.getOperations().add(op);
+
+    HttpEntity entity =
+        new ByteArrayEntity(mapper.writeValueAsString(req).getBytes("UTF-8"));
+    post.setEntity(entity);
+    HttpResponse response = client.execute(post);
+
+    assertTrue(200 == response.getStatusLine().getStatusCode());
+  }
+
+  @Test
+  public void bulkRequestToWrongMapping() throws Exception {
+    BulkRequest req = new BulkRequest();
+    BulkOperation op = new BulkOperation();
+    op.setUrl("/home2/BBB/ccc");
+    op.setMethod("PUT");
+    op.getHeaders().put("Authorization",
+        "Basic " + Base64Utils.encodeToString("user:password".getBytes()));
+    req.getOperations().add(op);
+
+    HttpEntity entity =
+        new ByteArrayEntity(mapper.writeValueAsString(req).getBytes("UTF-8"));
+    post.setEntity(entity);
+    HttpResponse response = client.execute(post);
+
+    System.out.println(IOUtils.toString(response.getEntity().getContent()));
+    assertTrue(422 == response.getStatusLine().getStatusCode());
+
+  }
+
+  @Test
+  public void bulkRequestToNonBulkableMapping() throws Exception {
+    BulkRequest req = new BulkRequest();
+    BulkOperation op = new BulkOperation();
+    op.setUrl("home3");
+    op.setMethod("PUT");
     op.getHeaders().put("Authorization",
         "Basic " + Base64Utils.encodeToString("user:password".getBytes()));
     req.getOperations().add(op);
