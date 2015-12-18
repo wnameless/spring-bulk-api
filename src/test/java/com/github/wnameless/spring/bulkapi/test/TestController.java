@@ -17,26 +17,29 @@
  */
 package com.github.wnameless.spring.bulkapi.test;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.github.wnameless.spring.bulkapi.Bulkable;
 
 @Bulkable
-@Controller
+@RestController
 public class TestController {
 
   @RequestMapping("/home")
-  @ResponseBody
   String home() {
     return "HAHA";
   }
 
   @RequestMapping("/home2/${aaa:a}/{dd}")
-  @ResponseBody
   String home2() {
     return "YAYA";
+  }
+
+  @RequestMapping("/home4")
+  String home4(@RequestParam("abc") String abc) {
+    return "GIGI";
   }
 
 }

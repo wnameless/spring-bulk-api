@@ -25,7 +25,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -241,9 +240,7 @@ public class BulkApiTest {
     post.setEntity(entity);
     HttpResponse response = client.execute(post);
 
-    System.out.println(IOUtils.toString(response.getEntity().getContent()));
     assertTrue(422 == response.getStatusLine().getStatusCode());
-
   }
 
   @Test
@@ -262,6 +259,25 @@ public class BulkApiTest {
     HttpResponse response = client.execute(post);
 
     assertTrue(422 == response.getStatusLine().getStatusCode());
+  }
+
+  @Test
+  public void bulkRequestWithParam() throws Exception {
+    BulkRequest req = new BulkRequest();
+    BulkOperation op = new BulkOperation();
+    op.setUrl("/home4");
+    op.setMethod("POST");
+    op.getHeaders().put("Authorization",
+        "Basic " + Base64Utils.encodeToString("user:password".getBytes()));
+    op.getParams().put("abc", "abc");
+    req.getOperations().add(op);
+
+    HttpEntity entity =
+        new ByteArrayEntity(mapper.writeValueAsString(req).getBytes("UTF-8"));
+    post.setEntity(entity);
+    HttpResponse response = client.execute(post);
+
+    assertTrue(200 == response.getStatusLine().getStatusCode());
   }
 
 }

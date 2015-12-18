@@ -78,11 +78,8 @@ public class BulkApiController {
       BodyBuilder bodyBuilder = RequestEntity.method(//
           httpMethod(op.getMethod()), computeUri(servReq, op));
 
-      setHeaders(bodyBuilder, op);
-      setBody(bodyBuilder, op);
-
       ResponseEntity<String> rawRes =
-          template.exchange(bodyBuilder.build(), String.class);
+          template.exchange(requestEntity(bodyBuilder, op), String.class);
 
       if (!op.isSilent()) results.add(buldResult(rawRes));
     }
@@ -90,19 +87,19 @@ public class BulkApiController {
     return new BulkResponse(results);
   }
 
-  private void setBody(BodyBuilder bodyBuilder, BulkOperation op) {
+  private RequestEntity<MultiValueMap<String, Object>> requestEntity(
+      BodyBuilder bodyBuilder, BulkOperation op) {
+    for (Entry<String, String> header : op.getHeaders().entrySet()) {
+      bodyBuilder.header(header.getKey(), header.getValue());
+    }
+
     MultiValueMap<String, Object> params =
         new LinkedMultiValueMap<String, Object>();
     for (Entry<String, ?> param : op.getParams().entrySet()) {
       params.add(param.getKey(), param.getValue());
     }
-    bodyBuilder.body(params);
-  }
 
-  private void setHeaders(BodyBuilder bodyBuilder, BulkOperation op) {
-    for (Entry<String, String> header : op.getHeaders().entrySet()) {
-      bodyBuilder.header(header.getKey(), header.getValue());
-    }
+    return bodyBuilder.body(params);
   }
 
   private URI computeUri(HttpServletRequest servReq, BulkOperation op) {

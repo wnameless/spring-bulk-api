@@ -29,7 +29,7 @@ public final class BulkOperation {
 
   private String url;
   private String method = "GET";
-  private Map<String, ?> params = new LinkedHashMap<String, Object>();
+  private Map<String, Object> params = new LinkedHashMap<String, Object>();
   private Map<String, String> headers = new LinkedHashMap<String, String>();
   private boolean silent = false;
 
@@ -76,7 +76,7 @@ public final class BulkOperation {
    * 
    * @return parameters of a RESTful operation
    */
-  public Map<String, ?> getParams() {
+  public Map<String, Object> getParams() {
     return params;
   }
 
@@ -86,7 +86,7 @@ public final class BulkOperation {
    * @param params
    *          parameters of a RESTful operation
    */
-  public void setParams(Map<String, ?> params) {
+  public void setParams(Map<String, Object> params) {
     this.params = params;
   }
 
