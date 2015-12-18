@@ -1,3 +1,5 @@
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.wnameless/spring-bulk-api/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.wnameless/spring-bulk-api)
+
 spring-bulk-api
 =============
 Add bulk operations support to any Spring RESTful API by a single annotation @EnableBulkApi.
@@ -16,7 +18,7 @@ Ex: enable basic authentication and SSL, disable CSRF protection... etc.
 <dependency>
 	<groupId>com.github.wnameless.spring</groupId>
 	<artifactId>spring-batch-api</artifactId>
-	<version>0.3.0</version>
+	<version>0.4.0</version>
 </dependency>
 ```
 
@@ -28,6 +30,15 @@ Add @EnableBulkApi to enable bulk API
 @Configuration
 @EnableBulkApi
 public class WebConfig {
+  ...
+}
+```
+
+Since v0.4.0, @Bulkable is required to be annotated on the controller which accepts bulk operations
+```java
+@Bulkable
+@RestController
+public class HomeController {
   ...
 }
 ```

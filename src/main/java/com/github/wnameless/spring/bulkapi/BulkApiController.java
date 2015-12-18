@@ -106,9 +106,7 @@ public class BulkApiController {
     String rawUrl = servReq.getRequestURL().toString();
     String rawUri = servReq.getRequestURI().toString();
 
-    String bulkPath = env.getProperty("spring.bulk.api.path", "/bulk");
-    if (op.getUrl() == null || op.getUrl().startsWith(bulkPath)
-        || op.getUrl().startsWith(bulkPath.substring(1))) {
+    if (op.getUrl() == null || isBulkPath(op.getUrl())) {
       throw new BulkApiException(UNPROCESSABLE_ENTITY,
           "Invalid URL(" + rawUri + ") exists in this bulk request");
     }
@@ -140,6 +138,15 @@ public class BulkApiController {
     }
 
     return uri;
+  }
+
+  private boolean isBulkPath(String url) {
+    String bulkPath = env.getProperty("spring.bulk.api.path", "/bulk");
+    bulkPath = bulkPath.replaceAll("/", "");
+    url = url.trim();
+    url = url.replaceAll("/", "");
+
+    return url.equals(bulkPath);
   }
 
   private BulkResult buldResult(ResponseEntity<String> rawRes) {

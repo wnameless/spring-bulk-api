@@ -10,5 +10,5 @@ Version 0.3.0
 + Allow user to omit the very first character "/" in each bulk operation url
 
 Version 0.4.0
-+ Add Bulkable annotation to provide better controls
++ Add @Bulkable annotation to provide better controls
 + Prevent user send bulk request which contains bulk API path
