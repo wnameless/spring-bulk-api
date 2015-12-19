@@ -1,4 +1,4 @@
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.wnameless/spring-bulk-api/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.wnameless/spring-bulk-api)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.wnameless.spring/spring-bulk-api/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.wnameless.spring/spring-bulk-api)
 
 spring-bulk-api
 =============
