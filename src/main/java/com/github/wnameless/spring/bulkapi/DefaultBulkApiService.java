@@ -48,10 +48,9 @@ import org.springframework.web.client.RestTemplate;
 public class DefaultBulkApiService implements BulkApiService {
 
   private final ApplicationContext appCtx;
+  private final Environment env;
 
   private BulkApiValidator validator;
-
-  private Environment env;
 
   /**
    * Creates a {@link DefaultBulkApiService}.
@@ -61,12 +60,12 @@ public class DefaultBulkApiService implements BulkApiService {
    */
   public DefaultBulkApiService(ApplicationContext appCtx) {
     this.appCtx = appCtx;
+    env = appCtx.getBean(Environment.class);
   }
 
   @PostConstruct
   private void afterConstruct() {
     validator = new BulkApiValidator(appCtx);
-    env = appCtx.getBean(Environment.class);
   }
 
   @Override
