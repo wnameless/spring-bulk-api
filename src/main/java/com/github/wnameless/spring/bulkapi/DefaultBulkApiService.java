@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.context.ApplicationContext;
@@ -46,9 +47,11 @@ import org.springframework.web.client.RestTemplate;
  */
 public class DefaultBulkApiService implements BulkApiService {
 
-  private final BulkApiValidator validator;
+  private final ApplicationContext appCtx;
 
-  private final Environment env;
+  private BulkApiValidator validator;
+
+  private Environment env;
 
   /**
    * Creates a {@link DefaultBulkApiService}.
@@ -57,6 +60,11 @@ public class DefaultBulkApiService implements BulkApiService {
    *          the Spring {@link ApplicationContext}
    */
   public DefaultBulkApiService(ApplicationContext appCtx) {
+    this.appCtx = appCtx;
+  }
+
+  @PostConstruct
+  private void afterConstruct() {
     validator = new BulkApiValidator(appCtx);
     env = appCtx.getBean(Environment.class);
   }
