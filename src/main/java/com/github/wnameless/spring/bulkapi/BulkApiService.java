@@ -19,8 +19,24 @@ package com.github.wnameless.spring.bulkapi;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * 
+ * {@link BulkApiService} defines the service interface for
+ * {@link BulkApiController} to use.
+ *
+ */
 public interface BulkApiService {
 
+  /**
+   * Processes the given {@link BulkRequest} and then returns a
+   * {@link BulkResponse} as result.
+   * 
+   * @param req
+   *          a {@link BulkRequest}
+   * @param servReq
+   *          a {@link HttpServletRequest}
+   * @return a {@link BulkResponse}
+   */
   public BulkResponse bulk(BulkRequest req, HttpServletRequest servReq);
 
 }

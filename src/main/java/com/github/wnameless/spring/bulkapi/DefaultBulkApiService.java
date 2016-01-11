@@ -38,12 +38,24 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * 
+ * {@link DefaultBulkApiService} id the default implementation of
+ * {@link BulkApiService}.
+ *
+ */
 public class DefaultBulkApiService implements BulkApiService {
 
   private final BulkApiValidator validator;
 
   private final Environment env;
 
+  /**
+   * Creates a {@link DefaultBulkApiService}.
+   * 
+   * @param appCtx
+   *          the Spring {@link ApplicationContext}
+   */
   public DefaultBulkApiService(ApplicationContext appCtx) {
     validator = new BulkApiValidator(appCtx);
     env = appCtx.getBean(Environment.class);
@@ -95,39 +107,31 @@ public class DefaultBulkApiService implements BulkApiService {
     URI uri;
     try {
       String servletPath = rawUrl.substring(0, rawUrl.indexOf(rawUri));
-      if (op.getUrl().startsWith("/")) {
-        uri = new URI(servletPath + op.getUrl());
-      } else {
-        uri = new URI(servletPath + "/" + op.getUrl());
-      }
+      uri = new URI(servletPath + urlify(op.getUrl()));
     } catch (URISyntaxException e) {
-      throw new BulkApiException(UNPROCESSABLE_ENTITY,
-          "Invalid URL(" + op.getUrl() + ") exists in this bulk request");
+      throw new BulkApiException(UNPROCESSABLE_ENTITY, "Invalid URL("
+          + urlify(op.getUrl()) + ") exists in this bulk request");
     }
 
-    if (op.getUrl().startsWith("/")) {
-      if (!validator.validatePath(op.getUrl(), httpMethod(op.getMethod()))) {
-        throw new BulkApiException(UNPROCESSABLE_ENTITY,
-            "Invalid URL(" + op.getUrl() + ") exists in this bulk request");
-      }
-    } else {
-      if (!validator.validatePath("/" + op.getUrl(),
-          httpMethod(op.getMethod()))) {
-        throw new BulkApiException(UNPROCESSABLE_ENTITY,
-            "Invalid URL(" + op.getUrl() + ") exists in this bulk request");
-      }
+    if (!validator.validatePath(urlify(op.getUrl()),
+        httpMethod(op.getMethod()))) {
+      throw new BulkApiException(UNPROCESSABLE_ENTITY, "Invalid URL("
+          + urlify(op.getUrl()) + ") exists in this bulk request");
     }
 
     return uri;
   }
 
   private boolean isBulkPath(String url) {
-    String bulkPath = env.getProperty("spring.bulk.api.path", "/bulk");
-    bulkPath = bulkPath.replaceAll("/", "");
-    url = url.trim();
-    url = url.replaceAll("/", "");
+    String bulkPath = urlify(env.getProperty("spring.bulk.api.path", "/bulk"));
+    url = urlify(url);
 
-    return url.equals(bulkPath);
+    return url.equals(bulkPath) || url.startsWith(bulkPath + "/");
+  }
+
+  private String urlify(String url) {
+    url = url.trim();
+    return url.startsWith("/") ? url : "/" + url;
   }
 
   private BulkResult buldResult(ResponseEntity<String> rawRes) {
