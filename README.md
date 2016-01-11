@@ -82,3 +82,14 @@ Response JSON sample
 + status - the HTTP status.
 + body - the response body.
 + headers - the headers of single result.
+
+BulkApiService
+```java
+@Autowired
+@Bean
+public BulkApiService bulkApiService(ApplicationContext appCtx) {
+  return new DefaultBulkApiService(appCtx)
+}
+```
+By default, the DefaultBulkApiService will be autowired automatically, you don't need to provide it.<br/>
+However you can extend the DefaultBulkApiService to provide your custom implementation or implement the BulkApiService interface by your own.
