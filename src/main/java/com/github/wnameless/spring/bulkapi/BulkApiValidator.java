@@ -23,13 +23,9 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.github.wnameless.spring.routing.RoutingPath;
@@ -43,19 +39,11 @@ import net.sf.rubycollect4j.block.TransformBlock;
  * bulkable or not.
  *
  */
-@Component
 public class BulkApiValidator {
 
-  @Autowired
-  private ApplicationContext appCtx;
+  private final RoutingPathResolver pathRes;
 
-  @Autowired
-  private Environment env;
-
-  private RoutingPathResolver pathRes;
-
-  @PostConstruct
-  private void afterContruct() {
+  public BulkApiValidator(ApplicationContext appCtx) {
     Map<String, Object> bulkableBeans =
         appCtx.getBeansWithAnnotation(Bulkable.class);
     List<String> basePackageNames =
@@ -68,7 +56,7 @@ public class BulkApiValidator {
 
         });
 
-    pathRes = new RoutingPathResolver(appCtx, env,
+    pathRes = new RoutingPathResolver(appCtx, appCtx.getBean(Environment.class),
         basePackageNames.toArray(new String[basePackageNames.size()]));
   }
 
