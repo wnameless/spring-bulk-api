@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2015 Wei-Ming Wu
+ * Copyright 2016 Wei-Ming Wu
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,20 +17,21 @@
  */
 package com.github.wnameless.spring.bulkapi.test;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.github.wnameless.spring.bulkapi.AcceptBulk;
 import com.github.wnameless.spring.bulkapi.Bulkable;
 
 @Bulkable(autoApply = false)
-@Controller
+@RestController
 public class TestController2 {
 
-  @RequestMapping("/home3")
-  @ResponseBody
-  String home() {
-    return "HAHA";
+  @AcceptBulk
+  @RequestMapping("/home4")
+  String home4(@RequestParam("abc") String abc) {
+    return "GIGI";
   }
 
 }
