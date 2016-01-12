@@ -31,7 +31,15 @@ public class AppConfig {
   @Autowired
   @Bean
   public BulkApiService bulkApiService(ApplicationContext appCtx) {
-    return new DefaultBulkApiService(appCtx);
+    return new CostumBulkApiService(appCtx);
+  }
+
+  public class CostumBulkApiService extends DefaultBulkApiService {
+
+    public CostumBulkApiService(ApplicationContext appCtx) {
+      super(appCtx);
+    }
+
   }
 
 }
