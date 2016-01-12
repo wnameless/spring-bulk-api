@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.github.wnameless.spring.routing.RoutingPath;
 import com.github.wnameless.spring.routing.RoutingPathResolver;
 
+import net.sf.rubycollect4j.block.BooleanBlock;
 import net.sf.rubycollect4j.block.TransformBlock;
 
 /**
@@ -74,7 +75,16 @@ public class BulkApiValidator {
 
     if (rp == null) return false;
 
-    return ra(rp.getClassAnnotations())
+    Annotation bulkable = findBulkableAnno(rp);
+    if (bulkable != null) {
+      if (isAutoApply(bulkable) || isAcceptBulk(rp)) return true;
+    }
+
+    return false;
+  }
+
+  private boolean isAcceptBulk(RoutingPath rp) {
+    return ra(rp.getMethodAnnotations())
         .map(new TransformBlock<Annotation, Class<? extends Annotation>>() {
 
           @Override
@@ -82,7 +92,22 @@ public class BulkApiValidator {
             return item.annotationType();
           }
 
-        }).contains(Bulkable.class);
+        }).contains(AcceptBulk.class);
+  }
+
+  private boolean isAutoApply(Annotation bulkable) {
+    return ((Bulkable) bulkable).autoApply();
+  }
+
+  private Annotation findBulkableAnno(RoutingPath rp) {
+    return ra(rp.getClassAnnotations()).find(new BooleanBlock<Annotation>() {
+
+      @Override
+      public boolean yield(Annotation item) {
+        return item.annotationType().equals(Bulkable.class);
+      }
+
+    });
   }
 
 }

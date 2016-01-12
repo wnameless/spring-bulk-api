@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2015 Wei-Ming Wu
+ * Copyright 2016 Wei-Ming Wu
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -23,19 +23,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.springframework.web.bind.annotation.RequestMapping;
+
 /**
  * 
- * {@link Bulkable} is designed to annotate on Spring
- * {@link org.springframework.stereotype.Controller @Controller} or
- * {@link org.springframework.web.bind.annotation.RestController @RestController}
- * which indicates all request mappings within those controllers are bulkable.
+ * {@link AcceptBulk} only takes affect when the autoApply value of
+ * {@link Bulkable} is false.<br>
+ * <br>
+ * {@link AcceptBulk} turns the annotated method which is already been annotated
+ * by the {@link RequestMapping} into bulkable API.
  *
  */
-@Target(ElementType.TYPE)
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Bulkable {
-
-  boolean autoApply() default true;
-
-}
+public @interface AcceptBulk {}

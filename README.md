@@ -43,6 +43,28 @@ public class HomeController {
 }
 ```
 
+Since v0.5.0, @AcceptBulk is added to provide more controls
+```java
+@Bulkable(autoApply=false)
+@RestController
+public class HomeController {
+
+  // Not allow bulk operations
+  @RequestMapping("/index")
+  public void index() {
+    ...
+  }
+
+  // Allow bulk operations
+  @AcceptBulk
+  @RequestMapping("/home")
+  public void home() {
+    ...
+  }
+  ...
+}
+```
+
 By default path is /bulk and limit to 100 operations,<br />
 it can be configured by Spring application.properties
 ```properties
