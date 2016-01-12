@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 /**
  * 
  * {@link Bulkable} is designed to annotate on Spring
- * {@link org.springframework.web.bind.annotation.Controller @Controller} or
+ * {@link org.springframework.stereotype.Controller @Controller} or
  * {@link org.springframework.web.bind.annotation.RestController @RestController}
  * which indicates all request mappings within those controllers are bulkable.
  *

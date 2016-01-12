@@ -1,11 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.wnameless.spring</groupId>
-	<artifactId>spring-batch-api</artifactId>
-	<version>0.4.0-SNAPSHOT</version>
+	<artifactId>spring-bulk-api</artifactId>
+	<version>0.4.1-SNAPSHOT</version>
 
-	<name>spring-batch-api</name>
+	<name>spring-bulk-api</name>
 	<description>Add bulk operations support to any Spring RESTful API by a single annotation @EnableBulkApi.</description>
 	<url>https://github.com/wnameless/spring-bulk-api</url>
 

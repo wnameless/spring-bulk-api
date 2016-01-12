@@ -17,7 +17,7 @@ Ex: enable basic authentication and SSL, disable CSRF protection... etc.
 ```xml
 <dependency>
 	<groupId>com.github.wnameless.spring</groupId>
-	<artifactId>spring-batch-api</artifactId>
+	<artifactId>spring-bulk-api</artifactId>
 	<version>0.4.0</version>
 </dependency>
 ```
