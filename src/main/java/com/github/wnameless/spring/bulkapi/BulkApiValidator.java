@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -56,7 +55,7 @@ public class BulkApiValidator {
 
         });
 
-    pathRes = new RoutingPathResolver(appCtx, appCtx.getBean(Environment.class),
+    pathRes = new RoutingPathResolver(appCtx,
         basePackageNames.toArray(new String[basePackageNames.size()]));
   }
 

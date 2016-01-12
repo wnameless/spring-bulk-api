@@ -60,7 +60,7 @@ public class DefaultBulkApiService implements BulkApiService {
    */
   public DefaultBulkApiService(ApplicationContext appCtx) {
     this.appCtx = appCtx;
-    env = appCtx.getBean(Environment.class);
+    env = appCtx.getEnvironment();
   }
 
   @PostConstruct
