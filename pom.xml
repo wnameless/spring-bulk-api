@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.wnameless.spring</groupId>
 	<artifactId>spring-bulk-api</artifactId>
-	<version>0.5.0</version>
+	<version>0.5.1-SNAPSHOT</version>
 
 	<name>spring-bulk-api</name>
 	<description>Add bulk operations support to any Spring RESTful API by a single annotation @EnableBulkApi.</description>
@@ -21,7 +21,7 @@
 		<connection>scm:git:git@github.com:wnameless/spring-bulk-api.git</connection>
 		<developerConnection>scm:git:git@github.com:wnameless/spring-bulk-api.git</developerConnection>
 		<url>git@github.com:wnameless/spring-bulk-api.git</url>
-		<tag>spring-bulk-api-0.5.0</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<distributionManagement>
