@@ -20,10 +20,7 @@ package com.github.wnameless.spring.bulkapi.test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.github.wnameless.spring.bulkapi.EnableBulkApi;
-
 @SpringBootApplication
-@EnableBulkApi
 public class Application {
 
   public static void main(String... args) {

@@ -37,8 +37,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Base64Utils;
@@ -56,9 +57,12 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
-@WebIntegrationTest
+@SpringBootTest(classes = Application.class,
+    webEnvironment = WebEnvironment.RANDOM_PORT)
 public class BulkApiTest {
+
+  @LocalServerPort
+  int port;
 
   @Value("${spring.bulk.api.path:/bulk}")
   String bulkPath;
@@ -76,7 +80,7 @@ public class BulkApiTest {
 
   @Before
   public void setUp() {
-    post = new HttpPost("http://localhost:8080" + bulkPath);
+    post = new HttpPost("http://localhost:" + port + bulkPath);
     post.setHeader("Content-Type", "application/json");
   }
 

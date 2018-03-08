@@ -24,7 +24,9 @@ import org.springframework.context.annotation.Configuration;
 
 import com.github.wnameless.spring.bulkapi.BulkApiService;
 import com.github.wnameless.spring.bulkapi.DefaultBulkApiService;
+import com.github.wnameless.spring.bulkapi.EnableBulkApi;
 
+@EnableBulkApi
 @Configuration
 public class AppConfig {
 
