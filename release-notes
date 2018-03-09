@@ -17,3 +17,7 @@ Version 0.4.0
 Version 0.5.0
 + Add BulkApiService interface and the DefaultBulkApiService implementation
 + Add @AcceptBulk to provide more controls
+
+Version 0.6.0
+* Upgrade spring-routing-resolver to v0.4.0 (For @GetMapping, @PostMapping, @DeleteMapping, @PutMapping, @PatchMapping)
+* Upgrade spring-boot-parent to v2.0.0

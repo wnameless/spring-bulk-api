@@ -18,12 +18,15 @@ Ex: enable basic authentication and SSL, disable CSRF protection... etc.
 <dependency>
 	<groupId>com.github.wnameless.spring</groupId>
 	<artifactId>spring-bulk-api</artifactId>
-	<version>0.5.0</version>
+	<version>0.6.0</version>
 </dependency>
 ```
 
+## Important
+@ResuestMapping allows user to define the url in the path property instead of value property. (ex: @ResuestMapping(path="/index"), @ResuestMapping(value="/index")).
 
-###Quick Start
+Before v0.6.0, the path value of @ResuestMapping(path="/index") is not read to spring-bulk-api, this bug has been fixed since v0.6.0.
+### Quick Start
 
 Add @EnableBulkApi to enable bulk API
 ```java
@@ -63,6 +66,15 @@ public class HomeController {
   }
   ...
 }
+```
+
+Since v0.6.0, following Spring mapping annotations are supported
+```java
+@GetMapping
+@PostMapping
+@DeleteMapping
+@PutMapping
+@PatchMapping
 ```
 
 By default path is /bulk and limit to 100 operations,<br />
