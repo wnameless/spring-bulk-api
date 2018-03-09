@@ -4,16 +4,16 @@ spring-bulk-api
 =============
 Add bulk operations support to any Spring RESTful API by a single annotation @EnableBulkApi.
 
-##Purpose
-Allow user to use JSON to define a list of RESTful operations,<br />
-and send to server-side for bulk actions.
+## Purpose
+Allow user to define a list of RESTful operations by JSON,<br />
+and send them to server-side for bulk actions.
 
-##Note
+## Note
 For simplicity, spring-bulk-api doesn't deal with any of security issues.<br />
 Server-side should set up the Spring security for safety concerns.<br />
 Ex: enable basic authentication and SSL, disable CSRF protection... etc.
 
-#Maven Repo
+# Maven Repo
 ```xml
 <dependency>
 	<groupId>com.github.wnameless.spring</groupId>
@@ -23,7 +23,7 @@ Ex: enable basic authentication and SSL, disable CSRF protection... etc.
 ```
 
 ## Important
-@ResuestMapping allows user to define the url in the path property instead of value property. (ex: @ResuestMapping(path="/index"), @ResuestMapping(value="/index")).
+@RequestMapping allows user to define the url in the path property instead of value property. (ex: @ResuestMapping(path="/index"), @RequestMapping(value="/index")).
 
 Before v0.6.0, the path value of @ResuestMapping(path="/index") is not read to spring-bulk-api, this bug has been fixed since v0.6.0.
 ### Quick Start
@@ -37,13 +37,13 @@ public class WebConfig {
 }
 ```
 
-Since v0.4.0, @Bulkable is required to be annotated on the controller which accepts bulk operations
+Since v0.6.0, following Spring mapping annotations are supported
 ```java
-@Bulkable
-@RestController
-public class HomeController {
-  ...
-}
+@GetMapping
+@PostMapping
+@DeleteMapping
+@PutMapping
+@PatchMapping
 ```
 
 Since v0.5.0, @AcceptBulk is added to provide more controls
@@ -68,23 +68,23 @@ public class HomeController {
 }
 ```
 
-Since v0.6.0, following Spring mapping annotations are supported
+Since v0.4.0, @Bulkable is required to be annotated on the controller which accepts bulk operations
 ```java
-@GetMapping
-@PostMapping
-@DeleteMapping
-@PutMapping
-@PatchMapping
+@Bulkable
+@RestController
+public class HomeController {
+  ...
+}
 ```
 
-By default path is /bulk and limit to 100 operations,<br />
-it can be configured by Spring application.properties
+#### application.properties
+By default path is /bulk and limit to 100 operations, it can be configured by Spring application.properties
 ```properties
 spring.bulk.api.path=/batch # default is /bulk
 spring.bulk.api.limit=200 # default is 100
 ```
 
-Request JSON sample
+#### Request JSON example
 ```json
 # POST /bulk
 # Content-Type: application/json
@@ -104,7 +104,7 @@ Request JSON sample
 + headers - a hash of of headers which should be included in this operation. (optional)
 + silent - if it's set to true, there is no result created in the response for this operation. (optional)
 
-Response JSON sample
+#### Response JSON example
 ```json
 {
   "results": [
@@ -117,7 +117,7 @@ Response JSON sample
 + body - the response body.
 + headers - the headers of single result.
 
-BulkApiService
+#### BulkApiService
 ```java
 @Autowired
 @Bean
