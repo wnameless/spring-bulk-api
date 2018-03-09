@@ -23,9 +23,11 @@ Ex: enable basic authentication and SSL, disable CSRF protection... etc.
 ```
 
 ## Important
-@RequestMapping allows user to define the url in the path property instead of value property. (ex: @ResuestMapping(path="/index"), @RequestMapping(value="/index")).
+@RequestMapping allows user to define the url in the path property instead of value property.<br>
+(ex: @ResuestMapping(path="/index"), @RequestMapping(value="/index")).
 
-Before v0.6.0, the path value of @ResuestMapping(path="/index") is not read to spring-bulk-api, this bug has been fixed since v0.6.0.
+Before v0.6.0, the path value of @ResuestMapping(path="/index") is not read to spring-bulk-api,<br>
+this bug has been fixed since v0.6.0.
 ### Quick Start
 
 Add @EnableBulkApi to enable bulk API
