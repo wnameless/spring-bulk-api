@@ -30,9 +30,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.github.wnameless.spring.routing.RoutingPath;
 import com.github.wnameless.spring.routing.RoutingPathResolver;
 
-import net.sf.rubycollect4j.block.BooleanBlock;
-import net.sf.rubycollect4j.block.TransformBlock;
-
 /**
  * 
  * {@link BulkApiValidator} can check all bulk request paths and methods whether
@@ -46,15 +43,8 @@ public class BulkApiValidator {
   public BulkApiValidator(ApplicationContext appCtx) {
     Map<String, Object> bulkableBeans =
         appCtx.getBeansWithAnnotation(Bulkable.class);
-    List<String> basePackageNames =
-        ra(bulkableBeans.values()).map(new TransformBlock<Object, String>() {
-
-          @Override
-          public String yield(Object item) {
-            return item.getClass().getPackage().getName();
-          }
-
-        });
+    List<String> basePackageNames = ra(bulkableBeans.values())
+        .map(o -> o.getClass().getPackage().getName());
 
     pathRes = new RoutingPathResolver(appCtx,
         basePackageNames.toArray(new String[basePackageNames.size()]));
@@ -84,15 +74,8 @@ public class BulkApiValidator {
   }
 
   private boolean isAcceptBulk(RoutingPath rp) {
-    return ra(rp.getMethodAnnotations())
-        .map(new TransformBlock<Annotation, Class<? extends Annotation>>() {
-
-          @Override
-          public Class<? extends Annotation> yield(Annotation item) {
-            return item.annotationType();
-          }
-
-        }).contains(AcceptBulk.class);
+    return ra(rp.getMethodAnnotations()).map(Annotation::annotationType)
+        .contains(AcceptBulk.class);
   }
 
   private boolean isAutoApply(Annotation bulkable) {
@@ -100,14 +83,8 @@ public class BulkApiValidator {
   }
 
   private Annotation findBulkableAnno(RoutingPath rp) {
-    return ra(rp.getClassAnnotations()).find(new BooleanBlock<Annotation>() {
-
-      @Override
-      public boolean yield(Annotation item) {
-        return item.annotationType().equals(Bulkable.class);
-      }
-
-    });
+    return ra(rp.getClassAnnotations())
+        .find(item -> item.annotationType().equals(Bulkable.class));
   }
 
 }
