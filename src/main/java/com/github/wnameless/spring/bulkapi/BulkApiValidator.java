@@ -17,8 +17,6 @@
  */
 package com.github.wnameless.spring.bulkapi;
 
-import static net.sf.rubycollect4j.RubyCollections.ra;
-
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.github.wnameless.spring.routing.RoutingPath;
 import com.github.wnameless.spring.routing.RoutingPathResolver;
+
+import net.sf.rubycollect4j.Ruby;
 
 /**
  * 
@@ -43,7 +43,7 @@ public class BulkApiValidator {
   public BulkApiValidator(ApplicationContext appCtx) {
     Map<String, Object> bulkableBeans =
         appCtx.getBeansWithAnnotation(Bulkable.class);
-    List<String> basePackageNames = ra(bulkableBeans.values())
+    List<String> basePackageNames = Ruby.Array.copyOf(bulkableBeans.values())
         .map(o -> o.getClass().getPackage().getName());
 
     pathRes = new RoutingPathResolver(appCtx,
@@ -74,8 +74,8 @@ public class BulkApiValidator {
   }
 
   private boolean isAcceptBulk(RoutingPath rp) {
-    return ra(rp.getMethodAnnotations()).map(Annotation::annotationType)
-        .contains(AcceptBulk.class);
+    return Ruby.Array.copyOf(rp.getMethodAnnotations())
+        .map(Annotation::annotationType).contains(AcceptBulk.class);
   }
 
   private boolean isAutoApply(Annotation bulkable) {
@@ -83,7 +83,7 @@ public class BulkApiValidator {
   }
 
   private Annotation findBulkableAnno(RoutingPath rp) {
-    return ra(rp.getClassAnnotations())
+    return Ruby.Array.copyOf(rp.getClassAnnotations())
         .find(item -> item.annotationType().equals(Bulkable.class));
   }
 

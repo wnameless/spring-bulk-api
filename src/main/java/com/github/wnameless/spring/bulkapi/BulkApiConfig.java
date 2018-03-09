@@ -17,13 +17,8 @@
  */
 package com.github.wnameless.spring.bulkapi;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
-import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -35,23 +30,11 @@ import org.springframework.context.annotation.Configuration;
  *
  */
 @Configuration
-public class BulkApiConfig implements BeanDefinitionRegistryPostProcessor {
+public class BulkApiConfig {
 
-  @Override
-  public void postProcessBeanFactory(
-      ConfigurableListableBeanFactory beanFactory) throws BeansException {}
-
-  @Override
-  public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry)
-      throws BeansException {
-    BeanDefinition ctrlBeanDef = new RootBeanDefinition(BulkApiController.class,
-        Autowire.BY_TYPE.value(), true);
-    registry.registerBeanDefinition("bulkApiController", ctrlBeanDef);
-
-    BeanDefinition adviceBeanDef = new RootBeanDefinition(
-        BulkApiExceptionHandlerAdvice.class, Autowire.BY_TYPE.value(), true);
-    registry.registerBeanDefinition("bulkApiExceptionHandlerAdvice",
-        adviceBeanDef);
+  @Bean
+  static BulkApiConfigBean bulkApiConfigBean() {
+    return new BulkApiConfigBean();
   }
 
 }

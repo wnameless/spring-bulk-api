@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.context.ApplicationContext;
@@ -63,9 +62,10 @@ public class DefaultBulkApiService implements BulkApiService {
     env = appCtx.getEnvironment();
   }
 
-  @PostConstruct
-  private void afterConstruct() {
-    validator = new BulkApiValidator(appCtx);
+  private BulkApiValidator validator() {
+    if (validator == null) validator = new BulkApiValidator(appCtx);
+
+    return validator;
   }
 
   @Override
@@ -120,7 +120,7 @@ public class DefaultBulkApiService implements BulkApiService {
           + urlify(op.getUrl()) + ") exists in this bulk request");
     }
 
-    if (!validator.validatePath(urlify(op.getUrl()),
+    if (!validator().validatePath(urlify(op.getUrl()),
         httpMethod(op.getMethod()))) {
       throw new BulkApiException(UNPROCESSABLE_ENTITY, "Invalid URL("
           + urlify(op.getUrl()) + ") exists in this bulk request");

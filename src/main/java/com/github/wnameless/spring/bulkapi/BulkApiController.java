@@ -19,7 +19,6 @@ package com.github.wnameless.spring.bulkapi;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +41,11 @@ public class BulkApiController {
   @Autowired(required = false)
   BulkApiService bulkApiService;
 
-  @PostConstruct
-  void afterConstruct() {
+  private BulkApiService bulkApiService() {
     if (bulkApiService == null)
       bulkApiService = new DefaultBulkApiService(appxCtx);
+
+    return bulkApiService;
   }
 
   /**
@@ -62,7 +62,7 @@ public class BulkApiController {
    */
   @RequestMapping(value = "${spring.bulk.api.path:/bulk}", method = POST)
   BulkResponse bulk(@RequestBody BulkRequest req, HttpServletRequest servReq) {
-    return bulkApiService.bulk(req, servReq);
+    return bulkApiService().bulk(req, servReq);
   }
 
 }
