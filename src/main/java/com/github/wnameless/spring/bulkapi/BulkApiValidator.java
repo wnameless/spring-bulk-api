@@ -18,8 +18,8 @@
 package com.github.wnameless.spring.bulkapi;
 
 import java.lang.annotation.Annotation;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpMethod;
@@ -27,8 +27,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.github.wnameless.spring.routing.RoutingPath;
 import com.github.wnameless.spring.routing.RoutingPathResolver;
-
-import net.sf.rubycollect4j.Ruby;
 
 /**
  * 
@@ -43,11 +41,10 @@ public class BulkApiValidator {
   public BulkApiValidator(ApplicationContext appCtx) {
     Map<String, Object> bulkableBeans =
         appCtx.getBeansWithAnnotation(Bulkable.class);
-    List<String> basePackageNames = Ruby.Array.copyOf(bulkableBeans.values())
-        .map(o -> o.getClass().getPackage().getName());
+    String[] basePackageNames = bulkableBeans.values().stream()
+        .map(o -> o.getClass().getPackage().getName()).toArray(String[]::new);
 
-    pathRes = new RoutingPathResolver(appCtx,
-        basePackageNames.toArray(new String[basePackageNames.size()]));
+    pathRes = new RoutingPathResolver(appCtx, basePackageNames);
   }
 
   /**
@@ -74,8 +71,8 @@ public class BulkApiValidator {
   }
 
   private boolean isAcceptBulk(RoutingPath rp) {
-    return Ruby.Array.copyOf(rp.getMethodAnnotations())
-        .map(Annotation::annotationType).contains(AcceptBulk.class);
+    return rp.getMethodAnnotations().stream().map(Annotation::annotationType)
+        .collect(Collectors.toList()).contains(AcceptBulk.class);
   }
 
   private boolean isAutoApply(Annotation bulkable) {
@@ -83,8 +80,9 @@ public class BulkApiValidator {
   }
 
   private Annotation findBulkableAnno(RoutingPath rp) {
-    return Ruby.Array.copyOf(rp.getClassAnnotations())
-        .find(item -> item.annotationType().equals(Bulkable.class));
+    return rp.getClassAnnotations().stream()
+        .filter(item -> item.annotationType().equals(Bulkable.class))
+        .findFirst().orElse(null);
   }
 
 }

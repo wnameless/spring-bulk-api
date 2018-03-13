@@ -64,11 +64,6 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>net.sf.rubycollect4j</groupId>
-			<artifactId>rubycollect4j</artifactId>
-			<version>2.0.1</version>
-		</dependency>
 
 		<!-- Testing -->
 		<dependency>
