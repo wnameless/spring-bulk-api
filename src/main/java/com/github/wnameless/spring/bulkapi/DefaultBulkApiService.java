@@ -93,12 +93,14 @@ public class DefaultBulkApiService implements BulkApiService {
       bodyBuilder.header(header.getKey(), header.getValue());
     }
 
-    MultiValueMap<String, Object> params =
-        new LinkedMultiValueMap<String, Object>();
-    for (Entry<String, ?> param : op.getParams().entrySet()) {
-      params.add(param.getKey(), param.getValue());
+    Object params;
+    if (op.getParams().values().stream().anyMatch(Map.class::isInstance)) {
+      params = op.getParams();
     }
-
+    else {
+      params = new LinkedMultiValueMap<String, Object>();
+      ((MultiValueMap) params).setAll(op.getParams());
+    }
     return bodyBuilder.body(params);
   }
 
