@@ -18,7 +18,7 @@ Ex: enable basic authentication and SSL, disable CSRF protection... etc.
 <dependency>
 	<groupId>com.github.wnameless.spring</groupId>
 	<artifactId>spring-bulk-api</artifactId>
-	<version>0.6.0</version>
+	<version>0.6.1</version>
 </dependency>
 ```
 

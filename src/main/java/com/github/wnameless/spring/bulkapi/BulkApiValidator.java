@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpMethod;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.github.wnameless.spring.routing.RoutingPath;
@@ -59,17 +60,27 @@ public class BulkApiValidator {
    *          a request bulk method
    * @return true if request path and method is bulkable, false otherwise
    */
-  public boolean validatePath(String path, HttpMethod method) {
+  public PathValidationResult validatePath(String path, HttpMethod method) {
     RoutingPath rp = pathRes.findByRequestPathAndMethod(path,
         RequestMethod.valueOf(method.toString()));
 
-    if (rp == null) return false;
+    if (rp == null) return new PathValidationResult(false, false);
 
     Annotation bulkable = findBulkableAnno(rp);
     if (bulkable != null) {
-      if (isAutoApply(bulkable) || isAcceptBulk(rp)) return true;
+      if (isAutoApply(bulkable) || isAcceptBulk(rp))
+        return new PathValidationResult(true, hasRequestBody(rp));
     }
 
+    return new PathValidationResult(false, false);
+  }
+
+  private boolean hasRequestBody(RoutingPath rp) {
+    for (List<Annotation> annos : rp.getParameterAnnotations()) {
+      if (Ruby.Array.of(annos).map(Annotation::annotationType)
+          .contains(RequestBody.class))
+        return true;
+    }
     return false;
   }
 
