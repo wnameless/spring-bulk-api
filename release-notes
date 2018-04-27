@@ -24,3 +24,4 @@ Version 0.6.0
 
 Version 0.6.1
 * Fix @ReauestBody bug
+- Remove overriding equals and hashCode in BulkApiException

@@ -48,7 +48,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Base64Utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.wnameless.spring.bulkapi.BulkApiException;
 import com.github.wnameless.spring.bulkapi.BulkOperation;
 import com.github.wnameless.spring.bulkapi.BulkRequest;
 import com.github.wnameless.spring.bulkapi.BulkResponse;
@@ -94,21 +93,21 @@ public class BulkApiTest {
         hasValidGettersAndSetters(), hasValidBeanToStringExcluding()));
     EqualsVerifier.forClass(BulkOperation.class)
         .suppress(Warning.NONFINAL_FIELDS).verify();
+
     assertThat(BulkRequest.class, allOf(hasValidBeanConstructor(),
         hasValidGettersAndSetters(), hasValidBeanToStringExcluding()));
     EqualsVerifier.forClass(BulkRequest.class).suppress(Warning.NONFINAL_FIELDS)
         .verify();
+
     assertThat(BulkResponse.class, allOf(hasValidBeanConstructor(),
         hasValidGettersAndSetters(), hasValidBeanToStringExcluding()));
     EqualsVerifier.forClass(BulkResponse.class)
         .suppress(Warning.NONFINAL_FIELDS).verify();
+
     assertThat(BulkResult.class, allOf(hasValidBeanConstructor(),
         hasValidGettersAndSetters(), hasValidBeanToStringExcluding()));
     EqualsVerifier.forClass(BulkResult.class).suppress(Warning.NONFINAL_FIELDS)
         .verify();
-
-    EqualsVerifier.forClass(BulkApiException.class)
-        .suppress(Warning.NULL_FIELDS).verify();
   }
 
   private BulkRequest operationTimes(int times) {

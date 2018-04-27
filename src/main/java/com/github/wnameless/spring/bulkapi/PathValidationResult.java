@@ -17,11 +17,11 @@
  */
 package com.github.wnameless.spring.bulkapi;
 
-public final class PathValidationResult {
+final class PathValidationResult {
 
-  private boolean valid;
+  private final boolean valid;
 
-  private boolean requestBody;
+  private final boolean requestBody;
 
   public PathValidationResult(boolean valid, boolean requestBody) {
     this.valid = valid;
@@ -37,8 +37,26 @@ public final class PathValidationResult {
   }
 
   @Override
+  public int hashCode() {
+    int result = 27;
+    result = result ^ 31 + (valid ? 1 : 0);
+    result = result ^ 31 + (requestBody ? 1 : 0);
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) return true;
+    if (obj == null) return false;
+    if (!(obj instanceof PathValidationResult)) return false;
+    PathValidationResult pvr = (PathValidationResult) obj;
+    return valid == pvr.valid && requestBody == pvr.requestBody;
+  }
+
+  @Override
   public String toString() {
-    return "PathValidationResult";
+    return getClass().getSimpleName() + "{valid=" + valid + ", requestBody="
+        + requestBody + "}";
   }
 
 }

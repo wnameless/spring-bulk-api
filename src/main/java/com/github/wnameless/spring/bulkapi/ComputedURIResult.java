@@ -21,13 +21,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.net.URI;
 
-public final class URIResult {
+final class ComputedURIResult {
 
-  private URI uri;
+  private final URI uri;
 
-  private boolean requestBody;
+  private final boolean requestBody;
 
-  public URIResult(URI uri, boolean requestBody) {
+  public ComputedURIResult(URI uri, boolean requestBody) {
     this.uri = checkNotNull(uri);
     this.requestBody = requestBody;
   }
@@ -41,8 +41,26 @@ public final class URIResult {
   }
 
   @Override
+  public int hashCode() {
+    int result = 27;
+    result = result ^ 31 + uri.hashCode();
+    result = result ^ 31 + (requestBody ? 1 : 0);
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) return true;
+    if (obj == null) return false;
+    if (!(obj instanceof ComputedURIResult)) return false;
+    ComputedURIResult curir = (ComputedURIResult) obj;
+    return uri.equals(curir.uri) && requestBody == curir.requestBody;
+  }
+
+  @Override
   public String toString() {
-    return "URIResult";
+    return getClass().getSimpleName() + "{uri=" + uri + ", requestBody="
+        + requestBody + "}";
   }
 
 }

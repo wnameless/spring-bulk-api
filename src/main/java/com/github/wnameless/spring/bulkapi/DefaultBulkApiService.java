@@ -74,7 +74,7 @@ public class DefaultBulkApiService implements BulkApiService {
     List<BulkResult> results = new ArrayList<BulkResult>();
     RestTemplate template = new RestTemplate();
     for (BulkOperation op : req.getOperations()) {
-      URIResult uriResult = computeUri(servReq, op);
+      ComputedURIResult uriResult = computeUri(servReq, op);
 
       BodyBuilder bodyBuilder = RequestEntity.method(//
           httpMethod(op.getMethod()), uriResult.getUri());
@@ -107,7 +107,7 @@ public class DefaultBulkApiService implements BulkApiService {
     return bodyBuilder.body(params);
   }
 
-  private URIResult computeUri(HttpServletRequest servReq, BulkOperation op) {
+  private ComputedURIResult computeUri(HttpServletRequest servReq, BulkOperation op) {
     String rawUrl = servReq.getRequestURL().toString();
     String rawUri = servReq.getRequestURI().toString();
 
@@ -132,7 +132,7 @@ public class DefaultBulkApiService implements BulkApiService {
           + urlify(op.getUrl()) + ") exists in this bulk request");
     }
 
-    return new URIResult(uri, pvr.hasRequestBody());
+    return new ComputedURIResult(uri, pvr.hasRequestBody());
   }
 
   private boolean isBulkPath(String url) {
