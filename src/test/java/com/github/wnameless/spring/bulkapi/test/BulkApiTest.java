@@ -25,6 +25,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -45,7 +48,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Base64Utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.wnameless.spring.bulkapi.BulkApiException;
 import com.github.wnameless.spring.bulkapi.BulkOperation;
 import com.github.wnameless.spring.bulkapi.BulkRequest;
 import com.github.wnameless.spring.bulkapi.BulkResponse;
@@ -53,6 +55,7 @@ import com.github.wnameless.spring.bulkapi.BulkResult;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import net.sf.rubycollect4j.Ruby;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 
@@ -90,21 +93,21 @@ public class BulkApiTest {
         hasValidGettersAndSetters(), hasValidBeanToStringExcluding()));
     EqualsVerifier.forClass(BulkOperation.class)
         .suppress(Warning.NONFINAL_FIELDS).verify();
+
     assertThat(BulkRequest.class, allOf(hasValidBeanConstructor(),
         hasValidGettersAndSetters(), hasValidBeanToStringExcluding()));
     EqualsVerifier.forClass(BulkRequest.class).suppress(Warning.NONFINAL_FIELDS)
         .verify();
+
     assertThat(BulkResponse.class, allOf(hasValidBeanConstructor(),
         hasValidGettersAndSetters(), hasValidBeanToStringExcluding()));
     EqualsVerifier.forClass(BulkResponse.class)
         .suppress(Warning.NONFINAL_FIELDS).verify();
+
     assertThat(BulkResult.class, allOf(hasValidBeanConstructor(),
         hasValidGettersAndSetters(), hasValidBeanToStringExcluding()));
     EqualsVerifier.forClass(BulkResult.class).suppress(Warning.NONFINAL_FIELDS)
         .verify();
-
-    EqualsVerifier.forClass(BulkApiException.class)
-        .suppress(Warning.NULL_FIELDS).verify();
   }
 
   private BulkRequest operationTimes(int times) {
@@ -274,6 +277,58 @@ public class BulkApiTest {
     op.getHeaders().put("Authorization",
         "Basic " + Base64Utils.encodeToString("user:password".getBytes()));
     op.getParams().put("abc", "abc");
+    req.getOperations().add(op);
+
+    HttpEntity entity =
+        new ByteArrayEntity(mapper.writeValueAsString(req).getBytes("UTF-8"));
+    post.setEntity(entity);
+    HttpResponse response = client.execute(post);
+
+    assertTrue(200 == response.getStatusLine().getStatusCode());
+  }
+
+  @Test
+  public void bulkRequestByRequestBodyWithNestedObject() throws Exception {
+    BulkRequest req = new BulkRequest();
+    BulkOperation op = new BulkOperation();
+    op.setUrl("/list");
+    op.setMethod("POST");
+    op.getHeaders().put("Authorization",
+        "Basic " + Base64Utils.encodeToString("user:password".getBytes()));
+    Map<String, Object> params = new HashMap<String, Object>() {
+      private static final long serialVersionUID = 1L;
+      {
+        put("a", Ruby.Hash.of("c", "D").toMap());
+        put("b", "E");
+      }
+    };
+    op.setParams(params);
+    req.getOperations().add(op);
+
+    HttpEntity entity =
+        new ByteArrayEntity(mapper.writeValueAsString(req).getBytes("UTF-8"));
+    post.setEntity(entity);
+    HttpResponse response = client.execute(post);
+
+    assertTrue(200 == response.getStatusLine().getStatusCode());
+  }
+
+  @Test
+  public void bulkRequestByRequestBodyWithObject() throws Exception {
+    BulkRequest req = new BulkRequest();
+    BulkOperation op = new BulkOperation();
+    op.setUrl("list2");
+    op.setMethod("POST");
+    op.getHeaders().put("Authorization",
+        "Basic " + Base64Utils.encodeToString("user:password".getBytes()));
+    Map<String, Object> params = new HashMap<String, Object>() {
+      private static final long serialVersionUID = 1L;
+      {
+        put("a", "D");
+        put("b", "E");
+      }
+    };
+    op.setParams(params);
     req.getOperations().add(op);
 
     HttpEntity entity =

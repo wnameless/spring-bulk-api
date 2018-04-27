@@ -35,7 +35,6 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.RequestEntity.BodyBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -72,14 +71,17 @@ public class DefaultBulkApiService implements BulkApiService {
   public BulkResponse bulk(BulkRequest req, HttpServletRequest servReq) {
     validateBulkRequest(req, servReq);
 
-    List<BulkResult> results = new ArrayList<BulkResult>();
+    List<BulkResult> results = new ArrayList<>();
     RestTemplate template = new RestTemplate();
     for (BulkOperation op : req.getOperations()) {
-      BodyBuilder bodyBuilder = RequestEntity.method(//
-          httpMethod(op.getMethod()), computeUri(servReq, op));
+      ComputedURIResult uriResult = computeUri(servReq, op);
 
-      ResponseEntity<String> rawRes =
-          template.exchange(requestEntity(bodyBuilder, op), String.class);
+      BodyBuilder bodyBuilder = RequestEntity.method(//
+          httpMethod(op.getMethod()), uriResult.getUri());
+
+      ResponseEntity<String> rawRes = template.exchange(
+          requestEntity(bodyBuilder, op, uriResult.hasRequestBody()),
+          String.class);
 
       if (!op.isSilent()) results.add(buldResult(rawRes));
     }
@@ -87,22 +89,26 @@ public class DefaultBulkApiService implements BulkApiService {
     return new BulkResponse(results);
   }
 
-  private RequestEntity<MultiValueMap<String, Object>> requestEntity(
-      BodyBuilder bodyBuilder, BulkOperation op) {
+  private RequestEntity<?> requestEntity(BodyBuilder bodyBuilder,
+      BulkOperation op, boolean requestBody) {
     for (Entry<String, String> header : op.getHeaders().entrySet()) {
       bodyBuilder.header(header.getKey(), header.getValue());
     }
 
-    MultiValueMap<String, Object> params =
-        new LinkedMultiValueMap<String, Object>();
-    for (Entry<String, ?> param : op.getParams().entrySet()) {
-      params.add(param.getKey(), param.getValue());
+    Object params;
+    if (requestBody) {
+      params = op.getParams();
+    } else {
+      LinkedMultiValueMap<String, Object> lmvm = new LinkedMultiValueMap<>();
+      lmvm.setAll(op.getParams());
+      params = lmvm;
     }
 
     return bodyBuilder.body(params);
   }
 
-  private URI computeUri(HttpServletRequest servReq, BulkOperation op) {
+  private ComputedURIResult computeUri(HttpServletRequest servReq,
+      BulkOperation op) {
     String rawUrl = servReq.getRequestURL().toString();
     String rawUri = servReq.getRequestURI().toString();
 
@@ -120,13 +126,14 @@ public class DefaultBulkApiService implements BulkApiService {
           + urlify(op.getUrl()) + ") exists in this bulk request");
     }
 
-    if (!validator().validatePath(urlify(op.getUrl()),
-        httpMethod(op.getMethod()))) {
+    PathValidationResult pvr = validator().validatePath(urlify(op.getUrl()),
+        httpMethod(op.getMethod()));
+    if (!pvr.isValid()) {
       throw new BulkApiException(UNPROCESSABLE_ENTITY, "Invalid URL("
           + urlify(op.getUrl()) + ") exists in this bulk request");
     }
 
-    return uri;
+    return new ComputedURIResult(uri, pvr.hasRequestBody());
   }
 
   private boolean isBulkPath(String url) {

@@ -17,24 +17,22 @@
  */
 package com.github.wnameless.spring.bulkapi;
 
-import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * 
- * {@link BulkApiConfig} implements the
- * {@link BeanDefinitionRegistryPostProcessor} which helps the user to load
- * {@link BulkApiController} and {@link BulkApiExceptionHandlerAdvice} after
- * adding the {@link EnableBulkApi @EnableBulkApi} annotation to the Web App.
+ * {@link BulkApiConfig} helps the {@link EnableBulkApi} annotation to locate
+ * and load {@link BulkApiController} and {@link BulkApiExceptionHandlerAdvice}
+ * after adding the {@link EnableBulkApi @EnableBulkApi} annotation to the Web
+ * App.
  *
  */
 @Configuration
 public class BulkApiConfig {
 
-  @Bean
-  static BulkApiConfigBean bulkApiConfigBean() {
-    return new BulkApiConfigBean();
-  }
+  // @Bean
+  // BulkApiConfigBean bulkApiConfigBean() {
+  // return new BulkApiConfigBean();
+  // }
 
 }

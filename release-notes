@@ -21,3 +21,7 @@ Version 0.5.0
 Version 0.6.0
 * Upgrade spring-routing-resolver to v0.4.0 (For @GetMapping, @PostMapping, @DeleteMapping, @PutMapping, @PatchMapping)
 * Upgrade spring-boot-parent to v2.0.0
+
+Version 0.6.1
+* Fix @ReauestBody bug
+- Remove overriding equals and hashCode in BulkApiException
