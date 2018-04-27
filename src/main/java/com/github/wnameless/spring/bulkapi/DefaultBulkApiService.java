@@ -71,7 +71,7 @@ public class DefaultBulkApiService implements BulkApiService {
   public BulkResponse bulk(BulkRequest req, HttpServletRequest servReq) {
     validateBulkRequest(req, servReq);
 
-    List<BulkResult> results = new ArrayList<BulkResult>();
+    List<BulkResult> results = new ArrayList<>();
     RestTemplate template = new RestTemplate();
     for (BulkOperation op : req.getOperations()) {
       ComputedURIResult uriResult = computeUri(servReq, op);
@@ -107,7 +107,8 @@ public class DefaultBulkApiService implements BulkApiService {
     return bodyBuilder.body(params);
   }
 
-  private ComputedURIResult computeUri(HttpServletRequest servReq, BulkOperation op) {
+  private ComputedURIResult computeUri(HttpServletRequest servReq,
+      BulkOperation op) {
     String rawUrl = servReq.getRequestURL().toString();
     String rawUri = servReq.getRequestURI().toString();
 

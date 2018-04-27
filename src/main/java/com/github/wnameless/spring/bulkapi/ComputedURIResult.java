@@ -17,8 +17,6 @@
  */
 package com.github.wnameless.spring.bulkapi;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.net.URI;
 
 final class ComputedURIResult {
@@ -28,7 +26,9 @@ final class ComputedURIResult {
   private final boolean requestBody;
 
   public ComputedURIResult(URI uri, boolean requestBody) {
-    this.uri = checkNotNull(uri);
+    if (uri == null) throw new NullPointerException();
+
+    this.uri = uri;
     this.requestBody = requestBody;
   }
 
