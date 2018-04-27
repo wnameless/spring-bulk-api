@@ -17,7 +17,6 @@
  */
 package com.github.wnameless.spring.bulkapi;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -31,9 +30,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class BulkApiConfig {
 
-  @Bean
-  BulkApiConfigBean bulkApiConfigBean() {
-    return new BulkApiConfigBean();
-  }
+  // @Bean
+  // BulkApiConfigBean bulkApiConfigBean() {
+  // return new BulkApiConfigBean();
+  // }
 
 }
