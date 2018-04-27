@@ -23,7 +23,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * 
@@ -35,5 +35,5 @@ import org.springframework.context.annotation.Import;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import(BulkApiConfig.class)
+@ComponentScan(basePackageClasses = { BulkApiConfig.class })
 public @interface EnableBulkApi {}
