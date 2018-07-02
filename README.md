@@ -100,7 +100,7 @@ spring.bulk.api.limit=200 # default is 100
 }
 
 ```
-+ url - the API endpoint. (required)
++ url - the API endpoint, relative to your application context path. (required)
 + method - the HTTP method(GET, POST, DELETE ...etc.) Default is GET. (optional)
 + params - the HTTP parameters to the API. (optional)
 + headers - a hash of of headers which should be included in this operation. (optional)

@@ -110,16 +110,16 @@ public class DefaultBulkApiService implements BulkApiService {
   private ComputedURIResult computeUri(HttpServletRequest servReq,
       BulkOperation op) {
     String rawUrl = servReq.getRequestURL().toString();
-    String rawUri = servReq.getRequestURI().toString();
+    String bulkPath = urlify(env.getProperty("spring.bulk.api.path", "/bulk"));
 
     if (op.getUrl() == null || isBulkPath(op.getUrl())) {
       throw new BulkApiException(UNPROCESSABLE_ENTITY,
-          "Invalid URL(" + rawUri + ") exists in this bulk request");
+          "Invalid URL(" + bulkPath + ") exists in this bulk request");
     }
 
     URI uri;
     try {
-      String servletPath = rawUrl.substring(0, rawUrl.indexOf(rawUri));
+      String servletPath = rawUrl.substring(0, rawUrl.lastIndexOf(bulkPath));
       uri = new URI(servletPath + urlify(op.getUrl()));
     } catch (URISyntaxException e) {
       throw new BulkApiException(UNPROCESSABLE_ENTITY, "Invalid URL("
