@@ -17,6 +17,10 @@
  */
 package com.github.wnameless.spring.bulkapi;
 
+import static com.github.wnameless.spring.bulkapi.BulkApiConfig.BULK_API_LIMIT_DEFAULT;
+import static com.github.wnameless.spring.bulkapi.BulkApiConfig.BULK_API_LIMIT_KEY;
+import static com.github.wnameless.spring.bulkapi.BulkApiConfig.BULK_API_PATH_DEFAULT;
+import static com.github.wnameless.spring.bulkapi.BulkApiConfig.BULK_API_PATH_KEY;
 import static org.springframework.http.HttpStatus.PAYLOAD_TOO_LARGE;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
@@ -83,7 +87,7 @@ public class DefaultBulkApiService implements BulkApiService {
           requestEntity(bodyBuilder, op, uriResult.hasRequestBody()),
           String.class);
 
-      if (!op.isSilent()) results.add(buldResult(rawRes));
+      if (!op.isSilent()) results.add(buildResult(rawRes));
     }
 
     return new BulkResponse(results);
@@ -117,9 +121,11 @@ public class DefaultBulkApiService implements BulkApiService {
           "Invalid URL(" + rawUri + ") exists in this bulk request");
     }
 
+    String bulkPath =
+        urlify(env.getProperty(BULK_API_PATH_KEY, BULK_API_PATH_DEFAULT));
     URI uri;
     try {
-      String servletPath = rawUrl.substring(0, rawUrl.indexOf(rawUri));
+      String servletPath = rawUrl.substring(0, rawUrl.lastIndexOf(bulkPath));
       uri = new URI(servletPath + urlify(op.getUrl()));
     } catch (URISyntaxException e) {
       throw new BulkApiException(UNPROCESSABLE_ENTITY, "Invalid URL("
@@ -137,7 +143,8 @@ public class DefaultBulkApiService implements BulkApiService {
   }
 
   private boolean isBulkPath(String url) {
-    String bulkPath = urlify(env.getProperty("spring.bulk.api.path", "/bulk"));
+    String bulkPath =
+        urlify(env.getProperty(BULK_API_PATH_KEY, BULK_API_PATH_DEFAULT));
     url = urlify(url);
 
     return url.equals(bulkPath) || url.startsWith(bulkPath + "/");
@@ -148,7 +155,7 @@ public class DefaultBulkApiService implements BulkApiService {
     return url.startsWith("/") ? url : "/" + url;
   }
 
-  private BulkResult buldResult(ResponseEntity<String> rawRes) {
+  private BulkResult buildResult(ResponseEntity<String> rawRes) {
     BulkResult res = new BulkResult();
     res.setStatus(Short.valueOf(rawRes.getStatusCode().toString()));
     res.setHeaders(rawRes.getHeaders().toSingleValueMap());
@@ -159,7 +166,8 @@ public class DefaultBulkApiService implements BulkApiService {
 
   private void validateBulkRequest(BulkRequest req,
       HttpServletRequest servReq) {
-    int max = env.getProperty("spring.bulk.api.limit", int.class, 100);
+    int max =
+        env.getProperty(BULK_API_LIMIT_KEY, int.class, BULK_API_LIMIT_DEFAULT);
     if (req.getOperations().size() > max) {
       throw new BulkApiException(PAYLOAD_TOO_LARGE,
           "Bulk operations exceed the limitation(" + max + ")");
