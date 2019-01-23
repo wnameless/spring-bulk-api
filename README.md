@@ -18,7 +18,7 @@ Ex: enable basic authentication and SSL, disable CSRF protection... etc.
 <dependency>
 	<groupId>com.github.wnameless.spring</groupId>
 	<artifactId>spring-bulk-api</artifactId>
-	<version>0.6.2</version>
+	<version>0.7.0</version>
 </dependency>
 ```
 
@@ -28,6 +28,8 @@ Ex: enable basic authentication and SSL, disable CSRF protection... etc.
 
 Before v0.6.0, the path value of @ResuestMapping(path="/index") is not read to spring-bulk-api,<br>
 this bug has been fixed since v0.6.0.
+
+Since Spring Boot v2.1.1, spring-bulk-api 0.7.0+ is required.
 ### Quick Start
 
 Add @EnableBulkApi to enable bulk API
@@ -37,6 +39,22 @@ Add @EnableBulkApi to enable bulk API
 public class WebConfig {
   ...
 }
+```
+
+Since v0.7.0, URITransformer is added to manipulate each request URI which is computed by each bulk request
+```java
+@Bean
+public URITransformer uriTransformer() {
+  
+  return new URITransformer() {
+
+    @Override
+    public URI transform(URI uri) {
+      // Some actions with uri..
+      return uri;
+    }
+
+};
 ```
 
 Since v0.6.0, following Spring mapping annotations are supported
