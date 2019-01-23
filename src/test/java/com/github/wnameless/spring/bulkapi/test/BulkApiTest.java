@@ -52,6 +52,7 @@ import com.github.wnameless.spring.bulkapi.BulkOperation;
 import com.github.wnameless.spring.bulkapi.BulkRequest;
 import com.github.wnameless.spring.bulkapi.BulkResponse;
 import com.github.wnameless.spring.bulkapi.BulkResult;
+import com.github.wnameless.spring.bulkapi.test.AppConfig.TestURITransformer;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -80,6 +81,9 @@ public class BulkApiTest {
 
   String authHeader =
       "Basic " + Base64Utils.encodeToString("user:password".getBytes());
+
+  @Autowired
+  TestURITransformer testUriTransformer;
 
   @Before
   public void setUp() {
@@ -337,6 +341,11 @@ public class BulkApiTest {
     HttpResponse response = client.execute(post);
 
     assertTrue(200 == response.getStatusLine().getStatusCode());
+  }
+
+  @Test
+  public void testURITransformer() {
+    assertTrue(testUriTransformer.isUsed());
   }
 
 }

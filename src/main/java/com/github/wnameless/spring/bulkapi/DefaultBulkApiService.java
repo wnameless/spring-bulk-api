@@ -53,6 +53,7 @@ public class DefaultBulkApiService implements BulkApiService {
   private final Environment env;
 
   private BulkApiValidator validator;
+  private URITransformer uriTransformer;
 
   /**
    * Creates a {@link DefaultBulkApiService}.
@@ -63,11 +64,15 @@ public class DefaultBulkApiService implements BulkApiService {
   public DefaultBulkApiService(ApplicationContext appCtx) {
     this.appCtx = appCtx;
     env = appCtx.getEnvironment();
+
+    String[] beanNames = appCtx.getBeanNamesForType(URITransformer.class);
+    if (beanNames.length > 0) {
+      uriTransformer = appCtx.getBean(URITransformer.class);
+    }
   }
 
   private BulkApiValidator validator() {
     if (validator == null) validator = new BulkApiValidator(appCtx);
-
     return validator;
   }
 
@@ -139,6 +144,7 @@ public class DefaultBulkApiService implements BulkApiService {
           + urlify(op.getUrl()) + ") exists in this bulk request");
     }
 
+    if (uriTransformer != null) uri = uriTransformer.transform(uri);
     return new ComputedURIResult(uri, pvr.hasRequestBody());
   }
 
@@ -157,7 +163,7 @@ public class DefaultBulkApiService implements BulkApiService {
 
   private BulkResult buildResult(ResponseEntity<String> rawRes) {
     BulkResult res = new BulkResult();
-    res.setStatus((short) rawRes.getStatusCodeValue());
+    res.setStatus(rawRes.getStatusCodeValue());
     res.setHeaders(rawRes.getHeaders().toSingleValueMap());
     res.setBody(rawRes.getBody());
 

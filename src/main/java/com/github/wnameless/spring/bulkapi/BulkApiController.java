@@ -42,9 +42,9 @@ public class BulkApiController {
   BulkApiService bulkApiService;
 
   private BulkApiService bulkApiService() {
-    if (bulkApiService == null)
+    if (bulkApiService == null) {
       bulkApiService = new DefaultBulkApiService(appCtx);
-
+    }
     return bulkApiService;
   }
 

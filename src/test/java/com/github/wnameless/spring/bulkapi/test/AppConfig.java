@@ -17,6 +17,8 @@
  */
 package com.github.wnameless.spring.bulkapi.test;
 
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +27,7 @@ import org.springframework.context.annotation.Configuration;
 import com.github.wnameless.spring.bulkapi.BulkApiService;
 import com.github.wnameless.spring.bulkapi.DefaultBulkApiService;
 import com.github.wnameless.spring.bulkapi.EnableBulkApi;
+import com.github.wnameless.spring.bulkapi.URITransformer;
 
 @EnableBulkApi
 @Configuration
@@ -40,6 +43,27 @@ public class AppConfig {
 
     public CostumBulkApiService(ApplicationContext appCtx) {
       super(appCtx);
+    }
+
+  }
+
+  @Bean
+  public TestURITransformer uriTransformer() {
+    return new TestURITransformer();
+  }
+
+  public class TestURITransformer implements URITransformer {
+
+    private boolean used = false;
+
+    @Override
+    public URI transform(URI uri) {
+      used = true;
+      return uri;
+    }
+
+    public boolean isUsed() {
+      return used;
     }
 
   }

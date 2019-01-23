@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public final class BulkResult {
 
-  private short status;
+  private int status;
   private String body;
   private Map<String, String> headers;
 
@@ -35,7 +35,7 @@ public final class BulkResult {
    * 
    * @return a HTTP status code
    */
-  public short getStatus() {
+  public int getStatus() {
     return status;
   }
 
@@ -45,7 +45,7 @@ public final class BulkResult {
    * @param status
    *          a HTTP status code
    */
-  public void setStatus(short status) {
+  public void setStatus(int status) {
     this.status = status;
   }
 
