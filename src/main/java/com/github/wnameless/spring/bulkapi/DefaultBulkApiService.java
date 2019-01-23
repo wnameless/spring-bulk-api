@@ -157,7 +157,7 @@ public class DefaultBulkApiService implements BulkApiService {
 
   private BulkResult buildResult(ResponseEntity<String> rawRes) {
     BulkResult res = new BulkResult();
-    res.setStatus(Short.valueOf(rawRes.getStatusCode().toString()));
+    res.setStatus((short) rawRes.getStatusCodeValue());
     res.setHeaders(rawRes.getHeaders().toSingleValueMap());
     res.setBody(rawRes.getBody());
 

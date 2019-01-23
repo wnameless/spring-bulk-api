@@ -36,14 +36,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class BulkApiController {
 
   @Autowired
-  ApplicationContext appxCtx;
+  ApplicationContext appCtx;
 
   @Autowired(required = false)
   BulkApiService bulkApiService;
 
   private BulkApiService bulkApiService() {
     if (bulkApiService == null)
-      bulkApiService = new DefaultBulkApiService(appxCtx);
+      bulkApiService = new DefaultBulkApiService(appCtx);
 
     return bulkApiService;
   }

@@ -36,9 +36,4 @@ public class BulkApiConfig {
   public static final String BULK_API_LIMIT_KEY = "spring.bulk.api.limit";
   public static final int BULK_API_LIMIT_DEFAULT = 100;
 
-  // @Bean
-  // BulkApiConfigBean bulkApiConfigBean() {
-  // return new BulkApiConfigBean();
-  // }
-
 }

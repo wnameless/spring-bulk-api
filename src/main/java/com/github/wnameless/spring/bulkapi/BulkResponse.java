@@ -27,7 +27,7 @@ import java.util.List;
  */
 public final class BulkResponse {
 
-  private List<BulkResult> results = new ArrayList<BulkResult>();
+  private List<BulkResult> results = new ArrayList<>();
 
   /**
    * Creates a {@link BulkResponse}
