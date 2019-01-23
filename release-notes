@@ -28,3 +28,7 @@ Version 0.6.1
 
 Version 0.6.2
 + Support application context path
+
+Version 0.7.0
++ Add URITransformer
+* Support Spring Boot v2.1.1 and above
