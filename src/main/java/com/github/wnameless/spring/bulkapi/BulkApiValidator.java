@@ -27,8 +27,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.github.wnameless.spring.routing.RoutingPath;
-import com.github.wnameless.spring.routing.RoutingPathResolver;
+import com.github.wnameless.spring.routing.resolver.RoutingPath;
+import com.github.wnameless.spring.routing.resolver.RoutingPathResolver;
 
 import net.sf.rubycollect4j.Ruby;
 
