@@ -17,29 +17,27 @@
  */
 package com.github.wnameless.spring.bulkapi;
 
-import static com.github.wnameless.spring.bulkapi.BulkApiConfig.BULK_API_LIMIT_DEFAULT;
-import static com.github.wnameless.spring.bulkapi.BulkApiConfig.BULK_API_LIMIT_KEY;
-import static com.github.wnameless.spring.bulkapi.BulkApiConfig.BULK_API_PATH_DEFAULT;
-import static com.github.wnameless.spring.bulkapi.BulkApiConfig.BULK_API_PATH_KEY;
-import static org.springframework.http.HttpStatus.PAYLOAD_TOO_LARGE;
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.RequestEntity.BodyBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
+
+import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+
+import static com.github.wnameless.spring.bulkapi.BulkApiConfig.*;
+import static org.springframework.http.HttpStatus.PAYLOAD_TOO_LARGE;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 /**
  * 
@@ -82,6 +80,7 @@ public class DefaultBulkApiService implements BulkApiService {
 
     List<BulkResult> results = new ArrayList<>();
     RestTemplate template = new RestTemplate();
+    template.setErrorHandler(new MyErrorHandler());
     for (BulkOperation op : req.getOperations()) {
       ComputedURIResult uriResult = computeUri(servReq, op);
 
@@ -193,4 +192,18 @@ public class DefaultBulkApiService implements BulkApiService {
     }
   }
 
+}
+
+
+//This Handler created just to avoid showing error for whole operation and show error for the specific url
+class MyErrorHandler implements ResponseErrorHandler {
+
+  @Override
+  public void handleError(ClientHttpResponse clientHttpResponse){
+  }
+
+  @Override
+  public boolean hasError(ClientHttpResponse clientHttpResponse){
+    return false;
+  }
 }
