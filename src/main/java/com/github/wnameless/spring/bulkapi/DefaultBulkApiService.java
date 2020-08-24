@@ -136,7 +136,7 @@ public class DefaultBulkApiService implements BulkApiService {
           + urlify(op.getUrl()) + ") exists in this bulk request");
     }
 
-    PathValidationResult pvr = validator().validatePath(urlify(op.getUrl()),
+    PathValidationResult pvr = validator().validatePath(stripeQueryParam(urlify(op.getUrl())),
         httpMethod(op.getMethod()));
     if (!pvr.isValid()) {
       throw new BulkApiException(UNPROCESSABLE_ENTITY, "Invalid URL("
@@ -158,6 +158,10 @@ public class DefaultBulkApiService implements BulkApiService {
   private String urlify(String url) {
     url = url.trim();
     return url.startsWith("/") ? url : "/" + url;
+  }
+
+  private String stripeQueryParam(String url){
+    return url.split("\\?")[0];
   }
 
   private BulkResult buildResult(ResponseEntity<String> rawRes) {
