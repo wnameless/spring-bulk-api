@@ -131,7 +131,7 @@ public final class BulkOperation {
 
   /**
    * Returns payload which client put in request without any change
-   * Client can put a string or number to distinguish between returned results
+   * In addition to using the order of results, client can put a string or number to distinguish between returned results.
    *
    * @return payload of a RESTful operation
    */
