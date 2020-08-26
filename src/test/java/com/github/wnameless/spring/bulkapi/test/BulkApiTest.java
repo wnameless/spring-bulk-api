@@ -300,7 +300,7 @@ public class BulkApiTest {
         String queryParamValue = "query_param";
         op.setUrl("/getwithparameter?abc=" + queryParamValue);
         op.setMethod("GET");
-        // op.getParams().put("abc", "query_param");
+        op.setPayload("requestNo:1");
         req.getOperations().add(op);
 
         HttpEntity entity =

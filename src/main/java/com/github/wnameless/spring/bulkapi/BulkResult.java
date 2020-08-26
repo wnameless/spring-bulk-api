@@ -17,6 +17,7 @@
  */
 package com.github.wnameless.spring.bulkapi;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Map;
 
 /**
@@ -29,6 +30,8 @@ public final class BulkResult {
   private int status;
   private String body;
   private Map<String, String> headers;
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private String payload;
 
   /**
    * Returns the HTTP status code of a RESTful operation outcome.
@@ -85,6 +88,26 @@ public final class BulkResult {
    */
   public void setHeaders(Map<String, String> headers) {
     this.headers = headers;
+  }
+
+  /**
+   * Returns payload which client put in request without any change
+   * Client can put a string or number to distinguish between returned results
+   *
+   * @return payload of a RESTful operation
+   */
+  public String getPayload() {
+    return payload;
+  }
+
+  /**
+   * Sets the payload parameters of this RESTful operation.
+   *
+   * @param payload
+   *          an arbitrary string
+   */
+  public void setPayload(String payload) {
+    this.payload = payload;
   }
 
   @Override

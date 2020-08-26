@@ -96,7 +96,7 @@ public class DefaultBulkApiService implements BulkApiService {
 
             }
 
-            if (!op.isSilent()) results.add(buildResult(rawRes));
+            if (!op.isSilent()) results.add(buildResult(rawRes, op.getPayload()));
         }
 
         return new BulkResponse(results);
@@ -169,11 +169,12 @@ public class DefaultBulkApiService implements BulkApiService {
         return url.split("\\?")[0];
     }
 
-    private BulkResult buildResult(ResponseEntity<String> rawRes) {
+    private BulkResult buildResult(ResponseEntity<String> rawRes, String payload) {
         BulkResult res = new BulkResult();
         res.setStatus(rawRes.getStatusCodeValue());
         res.setHeaders(rawRes.getHeaders().toSingleValueMap());
         res.setBody(rawRes.getBody());
+        res.setPayload(payload);
 
         return res;
     }
@@ -208,7 +209,7 @@ public class DefaultBulkApiService implements BulkApiService {
 class MyErrorHandler implements ResponseErrorHandler {
 
     @Override
-  public void handleError(ClientHttpResponse clientHttpResponse){
+    public void handleError(ClientHttpResponse clientHttpResponse) {
     }
 
     @Override
