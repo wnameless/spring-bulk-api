@@ -32,6 +32,7 @@ public final class BulkOperation {
   private Map<String, Object> params = new LinkedHashMap<String, Object>();
   private Map<String, String> headers = new LinkedHashMap<String, String>();
   private boolean silent = false;
+  private String payload;
 
   /**
    * Returns the URL of this RESTful operation.
@@ -126,6 +127,26 @@ public final class BulkOperation {
    */
   public void setSilent(boolean silent) {
     this.silent = silent;
+  }
+
+  /**
+   * Returns payload which client put in request without any change
+   * In addition to using the order of results, client can put a string or number to distinguish between returned results.
+   *
+   * @return payload of a RESTful operation
+   */
+  public String getPayload() {
+    return payload;
+  }
+
+  /**
+   * Sets the payload parameters of this RESTful operation.
+   *
+   * @param payload
+   *          an arbitrary string
+   */
+  public void setPayload(String payload) {
+    this.payload = payload;
   }
 
   @Override
